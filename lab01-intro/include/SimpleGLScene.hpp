@@ -1,0 +1,6 @@
+#ifndef LAB01_INCLUDE_SIMPLE_GL_SCENE_HPP
+#define LAB01_INCLUDE_SIMPLE_GL_SCENE_HPP
+
+#pragma once
+
+#endif
