@@ -1,6 +1,9 @@
 #include "Triangle.hpp"
 #include "ShaderPaths.hpp"
 
+#include <atlas/gl/Shader.hpp>
+#include <atlas/core/Macros.hpp>
+
 Triangle::Triangle()
 {
     USING_ATLAS_GL_NS;
@@ -32,15 +35,19 @@ Triangle::Triangle()
     };
 
     // Create a new shader and add it to our list.
+    mShaders.push_back(ShaderPointer(new Shader));
 
     // Compile the shaders.
+    mShaders[0]->compileShaders(shaders);
 
     // And link them.
+    mShaders[0]->linkShaders();
 
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
     glEnableVertexAttribArray(0);
 
     // Disable at the end to avoid mixing shaders.
+    mShaders[0]->disableShaders();
 }
 
 Triangle::~Triangle()
@@ -54,11 +61,15 @@ void Triangle::renderGeometry(atlas::math::Matrix4 projection,
 {
     // To avoid warnings from unused variables, you can use the 
     // UNUSED macro.
+    UNUSED(projection);
+    UNUSED(view);
 
     // Enable the shaders.
+    mShaders[0]->enableShaders();
 
     glBindVertexArray(mVao);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
     // Disable them.
+    mShaders[0]->disableShaders();
 }
