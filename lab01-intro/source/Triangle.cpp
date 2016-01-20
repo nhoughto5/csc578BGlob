@@ -1,7 +1,6 @@
 #include "Triangle.hpp"
 #include "ShaderPaths.hpp"
 
-#include <atlas/gl/Shader.hpp>
 #include <atlas/core/Macros.hpp>
 
 Triangle::Triangle()
