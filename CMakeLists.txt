@@ -40,4 +40,5 @@ add_subdirectory("${ANIM_LIB_ROOT}/atlas")
 
 # Now add the lab subdirectories.
 add_subdirectory("${ANIM_SOURCE_DIR}/lab01-intro")
+add_subdirectory("${ANIM_SOURCE_DIR}/lab02-euler")
 
