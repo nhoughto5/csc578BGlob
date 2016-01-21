@@ -4,9 +4,9 @@
 #include <atlas/core/Float.hpp>
 
 ColorCube::ColorCube() :
+    mIsStopped(false),
     mVelocity(0.0f),
-    mPosition(-15.0f, 15.0f, 0.0f),
-    mIsStopped(false)
+    mPosition(-15.0f, 15.0f, 0.0f)
 {
     USING_ATLAS_MATH_NS;
     USING_ATLAS_GL_NS;

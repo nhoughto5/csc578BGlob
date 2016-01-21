@@ -4,10 +4,10 @@ struct MayaCamera::MayaCameraImpl
 {
     MayaCameraImpl() :
         dolly(100.0f),
-        lastPos(0.0f),
-        movement(MayaCamera::CameraMovements::IDLE),
+        tumbleVector(45.0f),
         trackVector(0.0f),
-        tumbleVector(45.0f)
+        lastPos(0.0f),
+        movement(MayaCamera::CameraMovements::IDLE)
     {
         resetMatrices();
     }
