@@ -134,7 +134,13 @@ void EulerScene::updateScene(double time)
     if (mIsPlaying)
     {
         // Handle the timing stuff here.
+        mTime.deltaTime = (float)time - mTime.currentTime;
+        mTime.totalTime += (float)time;
+        mTime.currentTime = (float)time;
+
+        mTime.deltaTime *= 2.0f;
 
         // Tell our cube to update itself.
+        mCube.updateGeometry(mTime);
     }
 }

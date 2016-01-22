@@ -144,17 +144,28 @@ void ColorCube::updateGeometry(atlas::utils::Time const& t)
 
     // There are only two forces acting on the cube. The initial push,
     // (assume constant) and gravity.
+    Vector force, accel;
+    force = Vector(20, 0, 0) + Vector(0, -9.81, 0);
 
-    // Now, suppose our cube has a mass of 10 units, so acceleration is equal
-    // to force / 10.
+    // Now, suppose the cube has unit mass. Then F = a.
+    accel = force;
 
     // Now integrate to get the velocity.
+    mVelocity = mVelocity + t.deltaTime * accel;
     
     // Finally compute the final position for the cube.
+    mPosition = mPosition + t.deltaTime * mVelocity;
 
     // Check the ground, if we hit it, then kill everything.
+    if (atlas::core::leq(mPosition.y, 0.0f))
+    {
+        mPosition.y = 0.0f;
+        mVelocity = Vector(0.0f);
+        mIsStopped = true;
+    }
 
     // Set our model matrix to the new position.
+    mModel = glm::translate(Matrix4(1.0f), mPosition);
 }
 
 void ColorCube::renderGeometry(atlas::math::Matrix4 projection,
