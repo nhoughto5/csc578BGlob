@@ -15,19 +15,22 @@ public:
     void updateGeometry(atlas::utils::Time const& t) override;
     void renderGeometry(atlas::math::Matrix4 projection,
         atlas::math::Matrix4 view) override;
-    void stopAnimation(atlas::utils::Time const& t);
+    void stopAnimation(float animLength);
     void resetGeometry() override;
 
     enum class Integrator : int
     {
         EULER = 0,
-        RK4
+        EULER_SIMP,
+        VERLET
     };
 
     void setIntegrator(Integrator integrator);
 
 private:
     void eulerIntegrator(atlas::utils::Time const& t);
+    void sImpEulerIntegrator(atlas::utils::Time const& t);
+    void verletIntegrator(atlas::utils::Time const& t);
 
     atlas::primitives::Sphere mRefBall;
     atlas::primitives::Sphere mModelBall;
@@ -35,6 +38,7 @@ private:
     atlas::math::Vector mRefPosition;
     atlas::math::Vector mModelVelocity;
     atlas::math::Vector mModelPosition;
+    atlas::math::Vector mModelOldPosition;
     atlas::math::Vector mForce;
     
     float mMass;

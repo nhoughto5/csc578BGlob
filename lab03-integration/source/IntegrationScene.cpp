@@ -6,9 +6,11 @@
 
 IntegrationScene::IntegrationScene() :
     mIsPlaying(false),
-    mLastTime(0.0),
-    mAnimTime(2.0f),
-    mAccumulator(0.0f)
+    mLastTime(0.0f),
+    mFPS(60.0f),
+    mTick(1.0f / mFPS),
+    mAnimTime(0.0f),
+    mAnimLength(2.0f)
 {
     glEnable(GL_DEPTH_TEST);
 }
@@ -97,16 +99,8 @@ void IntegrationScene::keyPressEvent(int key, int scancode, int action, int mods
             break;
 
         case GLFW_KEY_SPACE:
-            if (mIsPlaying)
-            {
-                mLastTime = glfwGetTime();
-            }
-            else
-            {
-                glfwSetTime(mLastTime);
-            }
-
             mIsPlaying = !mIsPlaying;
+
 
         default:
             break;
@@ -135,18 +129,25 @@ void IntegrationScene::renderScene()
 
 void IntegrationScene::updateScene(double time)
 {
-    if (mIsPlaying)
+    mTime.currentTime = (float)time;
+    mTime.totalTime += (float)time;
+
+    if (atlas::core::geq(mTime.currentTime - mLastTime, mTick))
     {
-        mTime.deltaTime = (float)time - mTime.currentTime;
-        mTime.totalTime += (float)time;
-        mTime.currentTime = (float)time;
+        mLastTime += mTick;
+        mTime.deltaTime = mTick;
 
-        mBall.updateGeometry(mTime);
-
-        if (atlas::core::geq(mTime.currentTime, mAnimTime))
+        if (mIsPlaying)
         {
-            mBall.stopAnimation(mTime);
-            mIsPlaying = false;
+            mAnimTime += mTick;
+            mBall.updateGeometry(mTime);
+
+            if (atlas::core::geq(mAnimTime, mAnimLength))
+            {
+                mBall.stopAnimation(mAnimLength);
+                mIsPlaying = false;
+            }
         }
+
     }
 }

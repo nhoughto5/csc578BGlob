@@ -27,13 +27,17 @@ public:
 private:
     bool mIsDragging;
     bool mIsPlaying;
-    double mLastTime;
+
+    float mLastTime;
+    float mFPS;
+    float mTick;
+
     float mAnimTime;
-    float mAccumulator;
+    float mAnimLength;
+
     MayaCamera mCamera;
     Grid mGrid;
     CannonBall mBall;
-    const float mTick = 1 / 60.0f;
 };
 
 #endif

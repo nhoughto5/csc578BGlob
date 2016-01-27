@@ -7,12 +7,13 @@
 CannonBall::CannonBall() :
     mRefBall(1.0f),
     mModelBall(1.0f),
-    mRefPosition(6, 1, -12),
+    mRefPosition(6, 1, 0),
     mModelVelocity(0),
-    mModelPosition(-6, 1, -12),
-    mForce(0, 0, 10),
+    mModelPosition(-6, 1, 0),
+    mModelOldPosition(-6, 1, 0),
+    mForce(0, 0, 2),
     mMass(1.0f),
-    mIntegrator(Integrator::EULER)
+    mIntegrator(Integrator::VERLET)
 {
     USING_ATLAS_MATH_NS;
     USING_ATLAS_GL_NS;
@@ -55,6 +56,14 @@ void CannonBall::updateGeometry(atlas::utils::Time const& t)
         eulerIntegrator(t);
         break;
 
+    case Integrator::EULER_SIMP:
+        sImpEulerIntegrator(t);
+        break;
+
+    case Integrator::VERLET:
+        verletIntegrator(t);
+        break;
+
     default:
         break;
     }
@@ -92,11 +101,11 @@ void CannonBall::setIntegrator(Integrator integrator)
     mIntegrator = integrator;
 }
 
-void CannonBall::stopAnimation(atlas::utils::Time const& t)
+void CannonBall::stopAnimation(float animLength)
 {
     USING_ATLAS_MATH_NS;
 
-    float time = t.currentTime * t.currentTime;
+    float time = animLength * animLength;
     mRefPosition += 0.5f * (mForce / mMass) * time;
 
     mRefMatrix = glm::translate(Matrix4(1.0f), mRefPosition);
@@ -112,6 +121,36 @@ void CannonBall::stopAnimation(atlas::utils::Time const& t)
 
 void CannonBall::eulerIntegrator(atlas::utils::Time const& t)
 {
+    mModelPosition = mModelPosition + t.deltaTime * mModelVelocity;
+    mModelVelocity = mModelVelocity + t.deltaTime * (mForce / mMass);
+
+    std::string message = "At t = " + std::to_string(t.currentTime) +
+        " ball is at " + std::to_string(mModelPosition.z) + " with velocity "
+        + std::to_string(mModelVelocity.z);
+    INFO_LOG(message);
+}
+
+void CannonBall::sImpEulerIntegrator(atlas::utils::Time const& t)
+{
     mModelVelocity = mModelVelocity + t.deltaTime * (mForce / mMass);
     mModelPosition = mModelPosition + t.deltaTime * mModelVelocity;
+
+    std::string message = "At t = " + std::to_string(t.currentTime) +
+        " ball is at " + std::to_string(mModelPosition.z) + " with velocity "
+        + std::to_string(mModelVelocity.z);
+    INFO_LOG(message);
+}
+
+void CannonBall::verletIntegrator(atlas::utils::Time const& t)
+{
+    USING_ATLAS_MATH_NS;
+    
+    Vector tmp = mModelPosition;
+    mModelPosition += mModelPosition - mModelOldPosition + (mForce / mMass) *
+        t.deltaTime * t.deltaTime;
+    mModelOldPosition = tmp;
+
+    std::string message = "At t = " + std::to_string(t.currentTime) +
+        " ball is at " + std::to_string(mModelPosition.z);
+    INFO_LOG(message);
 }
