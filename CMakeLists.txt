@@ -29,5 +29,6 @@ add_subdirectory("${ANIM_ATLAS_ROOT}")
 # Now add the lab subdirectories.
 #add_subdirectory("${ANIM_SOURCE_DIR}/lab01-intro")
 #add_subdirectory("${ANIM_SOURCE_DIR}/lab02-euler")
-add_subdirectory("${ANIM_SOURCE_DIR}/lab03-integration")
+#add_subdirectory("${ANIM_SOURCE_DIR}/lab03-integration")
+add_subdirectory("${ANIM_SOURCE_DIR}/lab04-splines")
 
