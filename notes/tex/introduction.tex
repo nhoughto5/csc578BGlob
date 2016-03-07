@@ -1,0 +1,47 @@
+\chapter{Introduction}
+  The topic of collision detection is of particular importance in several
+  branches within computer graphics. Some examples include:
+  \begin{itemize}
+    \item It is used in video games to create realistic animations and 
+      interactions.
+    \item It is used to render a frame in a movie.
+    \item It is used in general animations.
+    \item It is used in physical simulations.
+  \end{itemize}
+
+  As a result, a lot of study has been devoted to this area. In these notes we
+  will discuss two main components: collision detection and space partitioning
+  algorithms.
+
+  Before we begin, it is important to determine what we would want in a
+  collision detection system, as well as which are the challenges that we will
+  face when designing it.
+
+    \section{Design Factors}
+      The first thing to consider is how objects are being represented. For
+      the most part, they are represented as triangular meshes (since this is
+      what graphics hardware is designed to work on). That being said, there
+      are other ways of representing objects, such as modelling with implicit
+      functions. While the choice of representation does affect the way the
+      collisions (and other algorithms) will work, let us agree to only
+      consider triangular meshes for the remainder of this discussion.
+
+      The second point of discussion is what we are going to be colliding. To
+      be more concise, do we use the rendering mesh or something else?
+      Let's look at an example: suppose that we have a mesh that is composed
+      by 2,000,000 triangles. We wish to intersect this mesh against another
+      model that is also composed of 2,000,000 triangles. The n\"aive way of
+      performing this task would be to check every triangle in the first mesh
+      against every triangle in the second. This, however, results in
+      4,000,000,000,000 intersection tests! Even with the most powerful
+      computers available, this would take a while. Even worse, it this were
+      part of a game, the amount of time the player would have to wait
+      \emph{per} frame is unacceptable. 
+
+      Clearly in this case we would want to use something \emph{other} than
+      the render mesh, preferably something that is more compact. This is
+      where bounding volumes kick in. These volumes are called proxy geometry.
+      These are usually optimized for collision detection systems.
+      Unfortunately, they also represent a problem: suppose that all of the
+      proxies are computed in a pre-processing step. What happens when the
+      original mesh is altered? How do we maintain these new geometries?

@@ -1,0 +1,50 @@
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{fullpage}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage[chapter]{algorithm}
+\usepackage{algpseudocode}
+\usepackage{hyperref}
+
+\def\a{{\mathbf a }}
+\def\b{{\mathbf b }}
+\def\c{{\mathbf c }}
+\def\d{{\mathbf d }}
+\def\e{{\mathbf e }}
+\def\o{{\mathbf o }}
+\def\p{{\mathbf p }}
+\def\s{{\mathbf s }}
+\def\x{{\mathbf x }}
+
+\lstdefinestyle{codestyle}{
+  belowcaptionskip = 1\baselineskip,
+  breaklines = true,
+  frame = L,
+  xleftmargin = \parindent,
+  language = C++,
+  showstringspaces = false,
+  basicstyle = \footnotesize\ttfamily,
+  keywordstyle = \color{blue}\ttfamily,
+  stringstyle = \color{red}\ttfamily,
+  commentstyle = \color{green}\ttfamily
+}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem*{cor}{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}[section]
+\newtheorem{exmp}{Example}[section]
+
+\theoremstyle{remark}
+\newtheorem*{rem}{Remark}
+\newtheorem*{note}{Note}
+\newtheorem{case}{Case}
