@@ -245,57 +245,140 @@ struct AABB
     compute, so it could be worthwhile to wrap the convex hull inside an AABB to
     optimize this.
 
+    The next case is easily shown with the following example.
+    \begin{exmp}
+      Consider a regular n-gon (like a hexagon for example) that has a vertex
+      $v$ with coordinates $(x, 0)$ where $x > 0$. Clearly this point is the
+      maximum on the x-axis. Now suppose we rotate the polygon counter-clockwise
+      by some angle $\theta$. Which point is more likely to be the new maximum?
+    \end{exmp}
 
-    Another way of optimizing the reconstruction of an AABB requires a way
-    to easily obtain the neighbourhood of a specific vertex. Given this, we
-    can construct an AABB by maintaining 6 pointers to the most extreme
-    points in each of the axes. Whenever we rotate the object, we climb
-    along the neighbours of the old vertex until we find a new extremal
-    point. This has an obvious drawback: the objects must be convex in order
-    for this to work properly (otherwise we would get stuck in local minima
-    and would never find the new extremal point). We can further optimize
-    this by reducing the number of comparisons we have to perform. For
-    example, if we are looking for the maximal point in $+x$, then we only
-    need to look at the $x$ coordinate of the vectors. The other obvious
-    problem is that hill-climbing requires a robust implementation for
-    finding neighbours for any given vertices.
+    In this example, we can clearly see that we can ignore vertices on the
+    opposite side of the polygon (provided $\theta$ isn't too large, as we will
+    discuss later). This means that the only vertices that we have to look at
+    are those that are neighbours of $v$, which cuts down on our search
+    dramatically. This is called hill-climbing.
+
+    This technique requires two things: first off, we need an efficient way of
+    obtaining the neighbours of a given vertex. The second requirement is that
+    the object must be convex (or we can operate directly on the convex hull of
+    the object). Its advantage is clear: it reduces the cost of updating the
+    AABB while at the same time providing a very tight fit for the particular
+    object. It does however suffer some drawbacks. First, it is perfectly
+    possible to encounter a situation where the search through the neighbouring
+    vertices does not yield the real maximum (or minimum) in that direction.
+    This means that there needs to be some pre-processing done for the object
+    before the update is called, or the update function must be robust enough to
+    handle these cases.\\
+    The second issue comes from the size of the neighbourhood. If the rotation
+    is relatively small, then we have to search through a relatively small
+    number of vertices. Unfortunately if the object is spinning too quickly,
+    then the size of the neighbourhood must increase to accordingly, which can
+    lead to lower performance.
 
     The last of the four realignment methods is to simply wrap the rotated
-    AABB in a new AABB. This gives us a new (approximate) AABB that we can
-    use to compute our collision detections. It is important to keep in mind
-    that the new AABB \emph{must} be computed with respect to the original
-    AABB, otherwise the box will just grow indefinitely.
-    The idea is as follows: consider a box $A$ that was transformed by a
-    matrix $\mathbf{M}$ resulting in a box $A'$. The three columns (or rows
-    depending on the convention) contain the world-coordinate axes of $A'$
-    in its local frame. \\
-    So what does this all mean? Well suppose that $A$ is given using min-max
-    representation and $\mathbf{M}$ is a column matrix. This means that we
-    can find the extents of $B$ by simply projecting each of the rotated
-    vertices onto the world-coordinate axes. Since minimal and maximal
-    extents will be composed by a linear combination of the transformed
-    values of $A$, then it is only a matter of finding the new min and max.
-    This can be easily done by adding the smaller terms and the largest
-    terms (respectively).
+    AABB in a new AABB. This gives us a new (approximate) AABB that we can use
+    in our computations. The first point of consideration is the following:
+    \begin{case}
+      Consider an object with a bounding box $A$. Now suppose that we apply a
+      sequence of rotations $R_1, R_2, \ldots, R_n$. Suppose that for each
+      rotation, we wrap the rotated AABB with a new AABB. In other words, $A_1$
+      is constructed from $A$, $A_2$ from $A_1$ and so forth. What happens to
+      the box? How can we address this problem?
+    \end{case}
+
+    This sequence of operations results in the box growing indefinitely. To
+    solve this, we simply construct the new AABB based on the \emph{original}
+    AABB. Since all the transformations can be easily accumulated into a single
+    matrix, we simply take the original box, transform it to whatever step we
+    are currently at, and use that transformed box to compute the new one.
+
+    The general idea for the algorithm is the following: consider a box $A$ that
+    was transformed by a matrix $\M$ resulting in a box $A'$. First of
+    all, recall that a matrix is ultimately a transformation of the basis (the
+    coordinate axes) of that vector space (the space where the box was defined).
+    That means that encoded inside the matrix $\M$ are the new coordinate axes
+    that we are mapping to. The next thing to consider is this: if we rotate the
+    minimum and maximum extents of the box, then the new maximum and minimum
+    extents will be composed by a linear combination of the originals. This all
+    implies that we can simply examine each coordinate individually by looking
+    at the appropriate column (or row) on the matrix $\M$ and the transformed
+    values of the minimum and maximum of $A$.
+
+    To better understand this, consider the following example:
+    \begin{exmp}
+      Consider a box $A$ that has maximum $(1, 1, 1)$ and minimum $(-1, -1,
+      -1)$. Suppose we apply the following rotation matrix: 
+      \[
+        \R = 
+        \begin{pmatrix}
+          1 & 0 & 0 \\
+          0 & -1 & 0 \\
+          0 & 0 & -1
+        \end{pmatrix}
+      \]
+      Then the new maximum on the x-axis can be computed as follows:
+      \begin{align*}
+        x'_{\max} &= \max(\R_{0, 0}x_{\min}, \R_{0, 0}x_{\max}) \\
+                  &+ \max(\R_{0, 1}x_{\min}, \R_{0, 1}x_{\max}) \\ 
+                  &+ \max(\R_{0, 2}x_{\min}, \R_{0, 2}x_{\max}) \\ 
+      \end{align*}
+    \end{exmp}
+
+    As we can clearly see, we only need to consider the first column of the
+    matrix and the x-coordinates of the minimum and maximum to compute the new
+    x maximum of the box.
+
+    Next, we turn our attention to bounding spheres. As we will see, the
+    interesting part about spheres isn't so much how they are represented or
+    updated, but rather how they are created in the first place.
 
   \section{Spheres}
-    Spheres are another very common bounding volume. Like AABBs, the
-    intersection tests for spheres is very simple to perform. In addition,
-    spheres have the property that they are invariant under rotations, which
-    means that the only transformation that affects them is translation,
-    which is very simple to do. They also have a very compact
-    representation: we only need a point and a radius to fully determine a
-    sphere. That said, the interesting part of spheres isn't in their
-    intersection tests, but rather on how they are computed.
+    Spheres are another very common bounding volume and serve as the foundation
+    for another volume found throughout the industry. As we might expect, their
+    intersection tests are very straightforward as is their representation. To
+    represent a sphere, we just need a centre and radius.
+    \begin{lstlisting}[caption=Sphere representation, style=codestyle]
+struct Sphere
+{
+  Point c;
+  float r;
+};
+    \end{lstlisting}
 
+    The intersection test is also pretty simple as is shown in \ref{alg:sphere}.
+    \begin{algorithm}
+      \caption{Sphere intersection test of two spheres $S_1$ and $S_2$}
+      \label{alg:sphere}
+      \begin{algorithmic}
+        \State $\d \gets \c_1 - \c_2$
+        \State $dist \gets \d \cdot \d$
+        \State $sum \gets r_1 - r_2$
+        \State \Return $dist \leq sum \cdot sum$
+      \end{algorithmic}
+    \end{algorithm}
+
+    In addition to this, spheres are invariant under rotations, which means that
+    their update methods are trivial: we just need to translate the centre as is
+    required.\\
+    At this stage is worth asking the following: if spheres are so easy to use,
+    why aren't they used all the time? Why bother with other volumes? The answer
+    is two-fold: first, while spheres are very convenient, they don't always
+    provide the best bounding for an object. Second, how do we compute a sphere
+    that is tight around the object?
+
+    We will focus on answering the second question for the remainder of the
+    chapter. The first question mostly depends on the application and what the
+    requirements are, so it will be omitted.\\
     A first attempt would be to try and find the centre of the mesh (finding
     the geometric mean of all the vertices) and use this as the centre of
     our sphere. The radius would then be the largest distance from this
     point. As attractive as this idea may seem, it actually leads to very
-    bad bounding spheres. A better alternative would be to construct an AABB
-    and set the centre to be the centre of the bounding box itself. This
-    leads to a much better bounding sphere and is as fast as computing the
-    AABB and finding the radius.
+    bad bounding spheres in the case where the points are fairly spread out (up
+    to twice the needed radius, in fact). So how can we improve this?\\
+    Instead of taking the geometric mean, we could construct an AABB around the
+    points and then use its centre as the centre of the sphere (it is actually
+    the opposite of trying to find an invariant AABB).
 
     An alternative way of computing the bounding sphere is to find an
     approximate bounding sphere (one that doesn't necessarily bound all of
@@ -309,3 +392,8 @@ struct AABB
     taking the diameter of the sphere to be the distance between the new
     point and the point that sits on the old sphere that is opposite to the
     new point with respect to the old sphere centre.
+
+    The idea of this algorithm will be the theme for the rest of the chapter.
+    Essentially we start with a guess (how good this guess is depends on the
+    method) and then we iteratively refine it until we get a sphere that bounds
+    the entire object.
