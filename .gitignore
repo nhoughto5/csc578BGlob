@@ -6,3 +6,7 @@ html/
 
 # Generated files #
 generated/
+
+# LaTeX #
+*.loa
+*.lol
