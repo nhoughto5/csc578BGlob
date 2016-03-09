@@ -18,8 +18,7 @@
   bounding volume ultimately boils down to the specific requirements of our
   application. In this chapter we will be focusing on the two most common
   examples of bounding volumes: axis-aligned bounding boxes (AABB), and
-  spheres. At the end we will briefly discuss another volume that has become
-  prevalent in the industry: sphere-swept volumes.
+  spheres.
 
   \section{Axis-aligned Bounding Boxes}
     This is one of the most common bounding volumes used in the graphics
@@ -335,7 +334,8 @@ struct AABB
 
   \section{Spheres}
     Spheres are another very common bounding volume and serve as the foundation
-    for another volume found throughout the industry. As we might expect, their
+    for another volume found throughout the industry called sphere-swept
+    volumes (which we will not discuss here). As we might expect, their
     intersection tests are very straightforward as is their representation. To
     represent a sphere, we just need a centre and radius.
     \begin{lstlisting}[caption=Sphere representation, style=codestyle]
@@ -397,3 +397,67 @@ struct Sphere
     Essentially we start with a guess (how good this guess is depends on the
     method) and then we iteratively refine it until we get a sphere that bounds
     the entire object.
+
+    Before we begin discussing the next technique, let us look at an example.
+    \begin{exmp}
+      Consider a set of $n$ points in $\mathbf{R}^2$. Suppose the points are
+      scattered in such a way that $p_i \in [-2, 2] \times [-1, 1]$. In other
+      words, the points are distributed flat along the x axis with some
+      variations in their height. Now suppose we wanted to create a bounding
+      sphere for this set and suppose we centred it at the origin. How would we
+      determine the radius?
+    \end{exmp}
+
+    We can solve this problem with a bit of intuition. The radius of the sphere
+    would correspond to the maximum extent of the data. Since the points are
+    scattered more in the x-axis than in the y-axis, we look for the largest
+    possible x-coordinate (positive or negative) and use that as our radius.
+
+    While this may not yield the best solution, it does introduce the key
+    concept that is used to produce a better starting guess for our sphere. The
+    analysis that we just performed is formally called Principal Component
+    Analysis (or PCA). In essence, what we do is examine the spread of the
+    points and use that to determine what the radius would be. This is performed
+    by computing a \emph{covariance} matrix, which encodes the way the two
+    variables ($x$ and $y$) vary together. The covariance matrix $\mathbf{C} =
+    [c_{ij}]$ for a data set $p_1, \ldots, p_n$ is defined as follows:
+    \begin{align*}
+      c_{ij} &= \frac{1}{n}\sum_{k = 1}^n(p_{k, i} - u_i)(p_{k, j} - u_j) \\
+      &= \frac{1}{n}\left( \sum_{k = 1}^n p_{k, i}p_{k, j} \right) - u_iu_j
+    \end{align*}
+    
+    where $u_i$ (and $u_j$) is the mean of the $i$-th coordinate value points:
+    \[
+      u_i = \frac{1}{n}\sum_{k = 1}^n p_{k, i}
+    \]
+
+    The covariance matrix describes the spread of the data. What we are
+    specifically interested in are the directions in which the data is spread.
+    These are the eigenvectors of the matrix. So, what we do is we find the
+    eigenvectors for the matrix $\mathbf{C}$ and sort them according to their
+    corresponding eigenvalues. The largest of these will be the axis over which
+    we will find the most extremal points. Their distance will become the radius
+    of our sphere, while their midpoint will become the centre. Once the sphere
+    is calculated, we can refine it so it includes all the points in the  data
+    set (if needed).
+
+    The final technique to consider involves finding the minimal bounding
+    sphere. We will only cover the general idea behind the algorithm and not the
+    actual implementation, since the details are quite complex and fall outside
+    of this course.\\
+    We begin by noting that a sphere can be defined by 4 non-coplanar points.
+    Using this definition, we could simply test every possible combination
+    of four (then three and two) points and compare the spheres, keeping only
+    the ones that contain all the points. Unfortunately, this approach is
+    $O(n^5)$, which as you might imagine, does not scale very well. In order to
+    solve this problem, we consider a recursive solution.
+
+    Suppose we have already found the minimal bounding sphere for a given data
+    set. Then if a new point is added, we only update the sphere if the point is
+    outside the original sphere. It is clear that the new point will sit on the
+    boundary of the new sphere. Using this, we can construct a recursive
+    algorithm that calculates the minimal bounding sphere of a set and runs in
+    linear time. This has several problems in terms of implementation, but a
+    robust version of this algorithm can be found in CGAL.
+
+
