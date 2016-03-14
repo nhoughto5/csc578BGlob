@@ -1,0 +1,14 @@
+set(SOURCE_LIST
+    "${GLOB_SOURCE_ROOT}/Grid.cpp"
+    "${GLOB_SOURCE_ROOT}/GlobScene.cpp"
+    "${GLOB_SOURCE_ROOT}/main.cpp"
+    "${GLOB_SOURCE_ROOT}/QuatCamera.cpp"
+    "${GLOB_SOURCE_ROOT}/Spline.cpp"
+	"${GLOB_SOURCE_ROOT}/SplineManager.cpp"
+	"${GLOB_SOURCE_ROOT}/BlobSet.cpp"
+	"${GLOB_SOURCE_ROOT}/ImplicitFunction.cpp"
+	"${GLOB_SOURCE_ROOT}/ImplicitPolygonizer.cpp"
+	"${GLOB_SOURCE_ROOT}/ParticleSet.cpp"
+	"${GLOB_SOURCE_ROOT}/SimpleMesh.cpp"
+	"${GLOB_SOURCE_ROOT}/stdafx.cpp"
+    PARENT_SCOPE)

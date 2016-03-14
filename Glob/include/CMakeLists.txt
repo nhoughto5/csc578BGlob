@@ -1,0 +1,13 @@
+set(INCLUDE_LIST
+    "${GLOB_INCLUDE_ROOT}/Grid.hpp"
+    "${GLOB_INCLUDE_ROOT}/GlobScene.hpp"
+    "${GLOB_INCLUDE_ROOT}/QuatCamera.h"
+    "${GLOB_INCLUDE_ROOT}/Spline.h"
+	"${GLOB_INCLUDE_ROOT}/SplineManager.hpp"
+	"${GLOB_INCLUDE_ROOT}/Blobset.h"
+	"${GLOB_INCLUDE_ROOT}/ImplicitFunction.h"
+	"${GLOB_INCLUDE_ROOT}/ImplicitPolygonizer.h"
+	"${GLOB_INCLUDE_ROOT}/ParticleSet.h"
+	"${GLOB_INCLUDE_ROOT}/SimpleMesh.h"
+	"${GLOB_INCLUDE_ROOT}/stdafx.h"
+    PARENT_SCOPE)
