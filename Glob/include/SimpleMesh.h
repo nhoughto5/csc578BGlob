@@ -35,14 +35,15 @@ public:
 
 	void DrawFaces_Smooth();
 
-	GLuint globVertexBufferID, VAO;
+	GLuint globVertexBufferID, VAO, globIndiciesBuffer;
 	std::vector<float> m_vVertices;
 	std::vector<float> m_vNormals;
 	std::vector<int> m_vTriangles;
 
-	std::vector<float> myBuffer;
-
+	std::vector<glm::vec3> myBuffer;
+	std::vector<int> indicies;
 private:
 	void organizeData();
 	void sendDataToGPU();
+	void getIndicies();
 };

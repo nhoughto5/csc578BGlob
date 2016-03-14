@@ -42,6 +42,7 @@ private:
 	Grid mGrid;
 	SplineManager mSplineManager;//
 	std::vector<atlas::math::Point> mControlPoints;
+	void RunSimulationStep();
 
 };
 

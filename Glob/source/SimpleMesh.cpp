@@ -4,6 +4,7 @@ const GLuint VERTEX_BYTE_SIZE = NUM_FLOATS_PER_VERTICE * sizeof(float);
 SimpleMesh::SimpleMesh()
 {
 	glGenBuffers(1, &globVertexBufferID);
+	glGenBuffers(1, &globIndiciesBuffer);
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 	glEnableVertexAttribArray(0);
@@ -11,6 +12,7 @@ SimpleMesh::SimpleMesh()
 	glBindBuffer(GL_ARRAY_BUFFER, globVertexBufferID);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZE, 0); //Define vertex position buffer locations
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZE, (void*)(3 * sizeof(float))); //Define vertex normal buffer locations
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, globIndiciesBuffer);
 
 	std::string shaderDir = generated::ShaderPaths::getShaderDirectory();
 	std::vector<ShaderInfo> shaders
@@ -35,24 +37,34 @@ void SimpleMesh::renderGeometry(atlas::math::Matrix4 projection, atlas::math::Ma
 	mShaders[0]->enableShaders();
 	auto mvpMat = projection * view * mModel;
 	glUniformMatrix4fv(mUniforms["mvpMat"], 1, GL_FALSE, &mvpMat[0][0]);
+	size_t nCount = triangle_count();
 	glBindVertexArray(VAO);
-	GLuint tri = triangle_count();
-	glDrawArrays(GL_TRIANGLES, 0, m_vVertices.size());
+	glDrawElements(GL_TRIANGLES, (GLsizei)indicies.size(), GL_UNSIGNED_SHORT, nullptr);
+	//glDrawArrays(GL_TRIANGLES, 0, nCount * 3);
 	mShaders[0]->disableShaders();
 }
 void SimpleMesh::sendDataToGPU() {
 	glBindBuffer(GL_ARRAY_BUFFER, globVertexBufferID);
 	glBufferData(GL_ARRAY_BUFFER, myBuffer.size() * sizeof(float), &myBuffer[0], GL_STREAM_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, globIndiciesBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicies.size() * sizeof(int), &indicies[0], GL_STATIC_DRAW);
+}
+void SimpleMesh::getIndicies() {
+	size_t nCount = triangle_count();
+	for (int i = 0; i < nCount * 3; ++i) {
+		indicies.push_back(i);
+	}
 }
 void SimpleMesh::organizeData() {
+	getIndicies();
 	size_t nCount = triangle_count();
 	for (unsigned int i = 0; i < nCount; ++i) {
 		int * pFace = triangle(i);
 		for (int k = 0; k < 3; ++k) {
-			myBuffer.push_back(*vertex(pFace[k]));
+			myBuffer.push_back(glm::vec3{ vertex(pFace[k])[0], vertex(pFace[k])[1], vertex(pFace[k])[2] });
 		}
 		for (int k = 0; k < 3; ++k) {
-			myBuffer.push_back(*normal(pFace[k]));
+			myBuffer.push_back(glm::vec3{ normal(pFace[k])[0], normal(pFace[k])[1], normal(pFace[k])[2] });
 		}
 	}
 }
@@ -61,9 +73,8 @@ void SimpleMesh::reset()
 	m_vVertices.resize(0);
 	m_vNormals.resize(0);
 	m_vTriangles.resize(0);
+	myBuffer.resize(0);
 }
-
-
 
 int SimpleMesh::add_vertex()
 {

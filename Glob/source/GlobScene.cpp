@@ -112,13 +112,19 @@ void GlobScene::keyPressEvent(int key, int scancode, int action, int mods) {
 			mCamera.startSlerp(3);
 			break;
 		case GLFW_KEY_SPACE:
-			mIsPlaying = !mIsPlaying;
+			//mIsPlaying = !mIsPlaying;
+			RunSimulationStep();
 		default:
 			break;
 		}
 	}
 }
-
+void GlobScene::RunSimulationStep()
+{
+	g_simulator.StepSimulation(0.1f);
+	g_blobs.UpdateParticles();
+	g_polygonizer.Polygonize();
+}
 void GlobScene::screenResizeEvent(int width, int height) {
 
 	glViewport(0, 0, width, height);
