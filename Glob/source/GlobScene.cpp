@@ -17,12 +17,14 @@ GlobScene::GlobScene() :
 	mSplineManager(int(mAnimLength * mFPS)),
 	ballPosition{ 4.0f, 0.0f, 4.0f },
 	mCamera(),
-	lightPosition{ -0.0f,5.0f, 0.0f },
+	lightPosition{ -4.0f,5.0f, 0.0f },
+	ambientLight{0.6f, 0.6f, 0.6f, 1.0f},
 	mGlob()
 {
 	glEnable(GL_DEPTH_TEST);
 	auto mat = glm::translate(atlas::math::Matrix4(1.0f), ballPosition);
 	mGlob.setLightPosition(lightPosition);
+	mGlob.setAmbientLight(ambientLight);
 }
 
 GlobScene::~GlobScene() {
@@ -130,6 +132,7 @@ void GlobScene::renderScene() {
 	mView = mCamera.getCameraMatrix();
 	mGrid.renderGeometry(mProjection, mView);
 	//mSplineManager.renderGeometry(mProjection, mView);
+	mGlob.setEyePosition(mCamera.getPosition());
 	mGlob.renderGeometry(mProjection, mView);
 }
 

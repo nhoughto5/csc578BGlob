@@ -38,6 +38,7 @@ private:
 	Glob mGlob;
 	std::vector<atlas::math::Point> mControlPoints;
 	glm::vec3 lightPosition;
+	glm::vec4 ambientLight;
 };
 
 #endif

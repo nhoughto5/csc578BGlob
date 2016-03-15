@@ -23,6 +23,7 @@ public:
 	void startSlerp(GLfloat duration);
 	bool isSlerping();
 	void setTarget(glm::vec3 loc);
+	glm::vec3 getPosition();
 private:
 	//Private Function
 	glm::quat vectorMulQuat(glm::quat q, glm::vec3 r);

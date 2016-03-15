@@ -13,6 +13,8 @@ public:
 	void updateGeometry(atlas::utils::Time const& t) override;
 	void RunSimulationStep();
 	void setLightPosition(glm::vec3 LP);
+	void setAmbientLight(glm::vec4 aL);
+	void setEyePosition(glm::vec3 eye);
 private:
 	GLuint verticesBufferId, mVao, globIndiciesBuffer;
 	BlobSet g_blobs;
@@ -21,7 +23,7 @@ private:
 	std::vector<glm::vec3> verticesBuffer;
 	std::vector<GLushort> indices;
 	void getIndices();
-	glm::vec3 lightPosition;
-	//void drawMesh();
+	glm::vec3 lightPosition, eyePosition;
+	glm::vec4 ambientLight;
 };
 #endif // !GLOB_H

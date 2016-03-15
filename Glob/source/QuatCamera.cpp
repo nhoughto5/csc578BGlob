@@ -223,3 +223,6 @@ bool QuatCamera::equals(glm::vec3 a, glm::vec3 b) {
 bool QuatCamera::isSlerping() {
 	return slerping;
 }
+glm::vec3 QuatCamera::getPosition() {
+	return position;
+}
