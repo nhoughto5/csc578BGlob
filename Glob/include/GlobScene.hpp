@@ -37,7 +37,7 @@ private:
 	SplineManager mSplineManager;
 	Glob mGlob;
 	std::vector<atlas::math::Point> mControlPoints;
-
+	glm::vec3 lightPosition;
 };
 
 #endif

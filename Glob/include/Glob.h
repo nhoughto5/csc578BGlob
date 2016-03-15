@@ -12,6 +12,7 @@ public:
 	void renderGeometry(atlas::math::Matrix4 projection, atlas::math::Matrix4 view) override;
 	void updateGeometry(atlas::utils::Time const& t) override;
 	void RunSimulationStep();
+	void setLightPosition(glm::vec3 LP);
 private:
 	GLuint verticesBufferId, mVao, globIndiciesBuffer;
 	BlobSet g_blobs;
@@ -20,6 +21,7 @@ private:
 	std::vector<glm::vec3> verticesBuffer;
 	std::vector<GLushort> indices;
 	void getIndices();
+	glm::vec3 lightPosition;
 	//void drawMesh();
 };
 #endif // !GLOB_H

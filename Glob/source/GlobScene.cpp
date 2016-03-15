@@ -17,11 +17,12 @@ GlobScene::GlobScene() :
 	mSplineManager(int(mAnimLength * mFPS)),
 	ballPosition{ 4.0f, 0.0f, 4.0f },
 	mCamera(),
+	lightPosition{ -0.0f,5.0f, 0.0f },
 	mGlob()
 {
 	glEnable(GL_DEPTH_TEST);
 	auto mat = glm::translate(atlas::math::Matrix4(1.0f), ballPosition);
-
+	mGlob.setLightPosition(lightPosition);
 }
 
 GlobScene::~GlobScene() {
@@ -103,11 +104,11 @@ void GlobScene::keyPressEvent(int key, int scancode, int action, int mods) {
 			mSplineManager.showSplinePoints();
 			break;
 		case GLFW_KEY_ENTER:
-			mCamera.setTarget(ballPosition);
-			mCamera.startSlerp(3);
+			//mCamera.setTarget(ballPosition);
+			//mCamera.startSlerp(3);
+			mIsPlaying = !mIsPlaying;
 			break;
 		case GLFW_KEY_SPACE:
-			//mIsPlaying = !mIsPlaying;
 			mGlob.RunSimulationStep();
 		default:
 			break;
