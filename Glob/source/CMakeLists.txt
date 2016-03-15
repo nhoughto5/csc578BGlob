@@ -11,4 +11,5 @@ set(SOURCE_LIST
 	"${GLOB_SOURCE_ROOT}/ParticleSet.cpp"
 	"${GLOB_SOURCE_ROOT}/SimpleMesh.cpp"
 	"${GLOB_SOURCE_ROOT}/stdafx.cpp"
+	"${GLOB_SOURCE_ROOT}/Glob.cpp"
     PARENT_SCOPE)

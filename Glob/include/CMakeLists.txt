@@ -10,4 +10,5 @@ set(INCLUDE_LIST
 	"${GLOB_INCLUDE_ROOT}/ParticleSet.h"
 	"${GLOB_INCLUDE_ROOT}/SimpleMesh.h"
 	"${GLOB_INCLUDE_ROOT}/stdafx.h"
+	"${GLOB_INCLUDE_ROOT}/Glob.h"
     PARENT_SCOPE)

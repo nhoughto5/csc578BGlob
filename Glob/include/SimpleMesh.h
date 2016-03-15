@@ -40,8 +40,8 @@ public:
 		return count; 
 	}
 	void DrawFaces_Smooth();
-
-
+	std::vector<glm::vec3> bufferData;
+	std::vector<glm::vec3> getBufferData();
 	std::vector<float> m_vVertices;
 	std::vector<float> m_vNormals;
 	std::vector<int> m_vTriangles;

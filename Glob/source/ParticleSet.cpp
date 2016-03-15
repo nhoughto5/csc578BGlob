@@ -1,6 +1,6 @@
 #include "ParticleSet.h"
 
-#include <GL/freeglut.h>
+//#include <GL/freeglut.h>
 
 ParticleSet::ParticleSet(void)
 {
@@ -37,31 +37,31 @@ void ParticleSet::UpdateParticles()
 }
 
 
-void ParticleSet::DrawParticles()
-{
-	glPushAttrib(GL_ENABLE_BIT | GL_POINT_BIT | GL_LINE_BIT);
-
-	unsigned int nCount = ParticleCount();
-
-	glPointSize(5.0f);
-	glColor3f(0,0,1);
-	glBegin(GL_POINTS);
-	for ( unsigned int k = 0; k < nCount; ++k ) {
-		glVertex3f( X(k).x, X(k).y, X(k).z);
-	}
-	glEnd();
-
-	glLineWidth(2.0f);
-	glColor3f(1,0,0);
-	glBegin(GL_LINES);
-	for ( unsigned int k = 0; k < nCount; ++k ) {
-		glVertex3f(X(k).x, X(k).y, X(k).z);
-		glVertex3f( X(k).x + V(k).x, X(k).y + V(k).y, X(k).z + V(k).z);
-	}
-	glEnd();
-
-	glPopAttrib();
-}
+//void ParticleSet::DrawParticles()
+//{
+//	glPushAttrib(GL_ENABLE_BIT | GL_POINT_BIT | GL_LINE_BIT);
+//
+//	unsigned int nCount = ParticleCount();
+//
+//	glPointSize(5.0f);
+//	glColor3f(0,0,1);
+//	glBegin(GL_POINTS);
+//	for ( unsigned int k = 0; k < nCount; ++k ) {
+//		glVertex3f( X(k).x, X(k).y, X(k).z);
+//	}
+//	glEnd();
+//
+//	glLineWidth(2.0f);
+//	glColor3f(1,0,0);
+//	glBegin(GL_LINES);
+//	for ( unsigned int k = 0; k < nCount; ++k ) {
+//		glVertex3f(X(k).x, X(k).y, X(k).z);
+//		glVertex3f( X(k).x + V(k).x, X(k).y + V(k).y, X(k).z + V(k).z);
+//	}
+//	glEnd();
+//
+//	glPopAttrib();
+//}
 
 
 

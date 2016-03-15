@@ -1,6 +1,6 @@
 #include "SimpleMesh.h"
 #include <algorithm>
-#include <GL/freeglut.h>
+//#include <GL/freeglut.h>
 
 SimpleMesh::SimpleMesh()
 {
@@ -74,25 +74,17 @@ void SimpleMesh::set_normal(int i, float * setn)
 
 void SimpleMesh::DrawFaces_Smooth()
 {
-	//std::ofstream myfile;
-	//myfile.open("theirVertices.txt");
-	glm::vec3 temp;
-	glBegin(GL_TRIANGLES);
+	bufferData.clear();
 	size_t nCount = triangle_count();
 	for ( unsigned int i = 0; i < nCount; ++i ) {
 		int * pFace = triangle(i);
-		//myfile << "Vertex  " << *triangle(i) << ": ";
 		for ( int k = 0; k < 3; ++k ) {
-			//myfile << "V" << pFace[k] << ": " <<  vertex(pFace[k])[0] << " " << vertex(pFace[k])[1] << " " << vertex(pFace[k])[2] << "   ";
-			temp = glm::vec3(vertex(pFace[k])[0], vertex(pFace[k])[1], vertex(pFace[k])[2]);
-			glNormal3fv( normal(pFace[k]) );
-			glVertex3f(temp.x, temp.y, temp.z);
-			//glVertex3fv( vertex(pFace[k]) );
+			bufferData.push_back(glm::vec3(vertex(pFace[k])[0], vertex(pFace[k])[1], vertex(pFace[k])[2]));
+			bufferData.push_back(glm::vec3(normal(pFace[k])[0], normal(pFace[k])[1], normal(pFace[k])[2]));
 		}
-		//myfile << "/n";
 	}
-	glEnd();
-	//int X = countThem(0);
-	//myfile.close();
-
+}
+std::vector<glm::vec3> SimpleMesh::getBufferData() {
+	DrawFaces_Smooth();
+	return bufferData;
 }
