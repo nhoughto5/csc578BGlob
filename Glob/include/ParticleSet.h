@@ -1,6 +1,8 @@
 #pragma once
+
+#include <glm\glm.hpp>
 #include <vector>
-#include <atlas/utils/Geometry.hpp>
+
 class ParticleSet
 {
 public:
@@ -29,8 +31,7 @@ public:
 	float & M(int i) { return m_M[i]; }
 
 	void DrawParticles();
-	const glm::vec3 getM_x(int i) const { return m_X[i]; };
-	const glm::vec3 getM_v(int i) const { return m_V[i]; };
+
 protected:
 	std::vector<glm::vec3> m_X;		// position
 	std::vector<glm::vec3> m_V;		// velocity

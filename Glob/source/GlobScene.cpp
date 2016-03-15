@@ -140,7 +140,7 @@ void GlobScene::renderScene() {
 	mView = mCamera.getCameraMatrix();
 	mGrid.renderGeometry(mProjection, mView);
 	//mSplineManager.renderGeometry(mProjection, mView);
-	g_polygonizer.Mesh().renderGeometry(mProjection, mView);
+	//g_polygonizer.Mesh().renderGeometry(mProjection, mView);
 }
 void GlobScene::updateScene(double time)
 {

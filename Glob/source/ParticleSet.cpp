@@ -1,5 +1,7 @@
 #include "ParticleSet.h"
 
+#include <GL\freeglut.h>
+
 ParticleSet::ParticleSet(void)
 {
 }
@@ -42,26 +44,19 @@ void ParticleSet::DrawParticles()
 	unsigned int nCount = ParticleCount();
 
 	glPointSize(5.0f);
-	glColor3f(0, 0, 1);
+	glColor3f(0,0,1);
 	glBegin(GL_POINTS);
-	glm::vec3 temp, temp2;
-	for (unsigned int k = 0; k < nCount; ++k) {
-		//glVertex3fv( X(k) );
-		temp = getM_x(k);
-		glVertex3f(temp.x, temp.y, temp.z);
+	for ( unsigned int k = 0; k < nCount; ++k ) {
+		glVertex3f( X(k).x, X(k).y, X(k).z);
 	}
 	glEnd();
 
 	glLineWidth(2.0f);
-	glColor3f(1, 0, 0);
+	glColor3f(1,0,0);
 	glBegin(GL_LINES);
-	for (unsigned int k = 0; k < nCount; ++k) {
-		temp = getM_x(k);
-		temp2 = getM_v(k);
-		//glVertex3fv( X(k) );
-		glVertex3f(temp.x, temp.y, temp.z);
-		//glVertex3fv( X(k) + V(k) );
-		glVertex3f(temp.x + temp2.x, temp.y + temp2.y, temp.z + temp2.z);
+	for ( unsigned int k = 0; k < nCount; ++k ) {
+		glVertex3f(X(k).x, X(k).y, X(k).z);
+		glVertex3f( X(k).x + V(k).x, X(k).y + V(k).y, X(k).z + V(k).z);
 	}
 	glEnd();
 

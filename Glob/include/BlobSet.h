@@ -1,4 +1,7 @@
 #pragma once
+
+#include <glm\glm.hpp>
+
 #include <vector>
 #include "ImplicitFunction.h"
 #include "ParticleSet.h"
@@ -7,7 +10,7 @@
 class Blob : public ImplicitFunction
 {
 public:
-	Blob() { m_vPosition = glm::vec3{0.0f, 0.0f, 0.0f}; m_fRadius = 1; }
+	Blob( ) { m_vPosition = glm::vec3(0.0f); m_fRadius = 1; }
 	Blob(const glm::vec3 & pos, float fRadius )  { m_vPosition = pos; m_fRadius = fRadius; }
 
 	/* ImplicitFunction interface */
