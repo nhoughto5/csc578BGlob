@@ -4,7 +4,7 @@
 
 int main()
 {
-    APPLICATION.createWindow(400, 400, "integration");
+    APPLICATION.createWindow(900, 500, "Globular Physics");
     APPLICATION.addScene(new GlobScene);
     APPLICATION.runApplication();
 

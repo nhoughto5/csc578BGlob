@@ -15,18 +15,19 @@ GlobScene::GlobScene() :
 	mSplineManager(int(mAnimLength * mFPS)),
 	ballPosition{ 4.0f, 0.0f, 4.0f },
 	mCamera(),
-	g_simulator(1, 0.1f)
+	g_simulator(1, 0.1)
 {
 	glEnable(GL_DEPTH_TEST);
 	auto mat = glm::translate(atlas::math::Matrix4(1.0f), ballPosition);
-
-	g_blobs.AddBlob(Blob(glm::vec3(-4, 0, 0), 2));
-	g_blobs.AddBlob(Blob(glm::vec3(4, 0, 0), 2));
-	g_blobs.AddBlob(Blob(glm::vec3(0, 0, 4), 2));
+	int start = 4;
+	g_blobs.AddBlob(Blob(glm::vec3(-start, 0, 0), 2));
+	//g_blobs.AddBlob(Blob(glm::vec3(start, 0, 0), 2));
+	//g_blobs.AddBlob(Blob(glm::vec3(0, 0, start), 2));
 	g_simulator.SetParticles(&g_blobs);
 	g_polygonizer.SetFunction(&g_blobs);
 	g_polygonizer.Initialize();
 	g_polygonizer.Polygonize();
+
 }
 
 GlobScene::~GlobScene() {
