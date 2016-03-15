@@ -1,6 +1,6 @@
 #include "QuatCamera.h"
 #include <iostream>
-#include <glm\gtx\transform.hpp>
+#include <glm/gtx/transform.hpp>
 
 QuatCamera::QuatCamera(glm::vec3 pos, glm::vec3 up_, glm::vec3 forward_) :
 	yAxis{ 0.0f, 1.0f, 0.0f },

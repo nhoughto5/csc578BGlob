@@ -502,7 +502,7 @@ int pg_reset_polygonizer( polygonizer * p,
 			  unsigned int convergence )
 {
 	if(p == NULL){
-		fprintf(stderr, "reset_polygonizer: polygonizer is NULL!\n");
+		fprintf(stderr, "reset_polygonizer: polygonizer is NULL!/n");
 		return 1;
 	}
 
@@ -585,7 +585,7 @@ char * pg_polygonize ( polygonizer * p )
 
 			noabort = docube(&c, p);
 			if(! noabort){
-				fprintf(stderr, "polygonize:: aborted!\n");
+				fprintf(stderr, "polygonize:: aborted!/n");
 				return "aborted";
 			}
 
@@ -612,7 +612,7 @@ char * pg_polygonize ( polygonizer * p )
 
 
 	/* handy for odd bugs 
-	printf("Finished Polygonizing. Mesh has %d vertices and %d triangles\n",
+	printf("Finished Polygonizing. Mesh has %d vertices and %d triangles/n",
 	p->mesh->vertex_count, p->mesh->triangle_count);
 	if(p->mesh->triangle_count == 0)
 	abort();
@@ -651,10 +651,10 @@ static void testface (int i, int j, int k, MC_CUBE * old, int face,
      (old->corners[c4]->value > 0) == pos) return;
 
   if( ! iaabb_inside( &(p->bounds), ijk) ){
-    printf("%d %d %d / %d %d %d\n",
+    printf("%d %d %d / %d %d %d/n",
 	   p->bounds.low[0], p->bounds.low[1], p->bounds.low[2],
 	   p->bounds.high[0], p->bounds.high[1], p->bounds.high[2] );
-    printf("%d %d %d out of bounds!\n", ijk[0], ijk[1], ijk[2]);
+    printf("%d %d %d out of bounds!/n", ijk[0], ijk[1], ijk[2]);
     return;
   }
 
@@ -827,7 +827,7 @@ int nextcwedge (int edge, int face)
 	case TN: return (face == T)? LT : RN;
 	case TF: return (face == T)? RT : LF;
         default:
-	  printf("ERROR! nextcwedge reached default case!\n");
+	  printf("ERROR! nextcwedge reached default case!/n");
 	  return 0;
     }
 }

@@ -1,6 +1,6 @@
 #include "ParticleSet.h"
 
-#include <GL\freeglut.h>
+#include <GL/freeglut.h>
 
 ParticleSet::ParticleSet(void)
 {

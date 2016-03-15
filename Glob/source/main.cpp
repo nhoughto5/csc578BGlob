@@ -8,7 +8,6 @@
 #include <GL\freeglut.h>
 #include "BlobSet.h"
 #include "ImplicitPolygonizer.h"
-#include <glm\glm.hpp>
 #include <algorithm>
 // get rid of console window
 #pragma comment( linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"" )  
@@ -20,30 +19,30 @@
 // camera
 glm::vec3 g_center;
 glm::vec3 g_eye;
-float g_viewAngle[2] = {0,0};
+float g_viewAngle[2] = { 0,0 };
 float g_distance = 1;
 float g_boundsRadius = 5;
 
 
 // scene
 BlobSet g_blobs;
-OriginSpringSimulator g_simulator = OriginSpringSimulator(1,0.1);
+OriginSpringSimulator g_simulator = OriginSpringSimulator(1, 0.1);
 
 ImplicitPolygonizer g_polygonizer;
 
 static void InitializeScene()
 {
-	g_blobs.AddBlob( Blob(glm::vec3(-4,0,0), 2) );
-	g_blobs.AddBlob( Blob(glm::vec3(4,0,0), 2) );
-	//g_blobs.AddBlob(Blob(glm::vec3(0, 0, 4), 2));
+	g_blobs.AddBlob(Blob(glm::vec3(-4, 0, 0), 2));
+	g_blobs.AddBlob(Blob(glm::vec3(4, 0, 0), 2));
+	g_blobs.AddBlob(Blob(glm::vec3(0, 0, 4), 2));
 	g_simulator.SetParticles(&g_blobs);
 
 	g_polygonizer.SetFunction(&g_blobs);
 	g_polygonizer.Initialize();
 	g_polygonizer.Polygonize();
 
-	g_center = glm::vec3(0,0,0);
-	g_distance = 5;
+	g_center = glm::vec3(0, 0, 0);
+	g_distance = 3;
 	g_boundsRadius = 3;
 }
 
@@ -53,7 +52,7 @@ void RunSimulationStep()
 	g_simulator.StepSimulation(0.1f);
 	g_blobs.UpdateParticles();
 	g_polygonizer.Polygonize();
-    glutPostRedisplay();	
+	glutPostRedisplay();
 }
 
 
@@ -69,20 +68,20 @@ static void ondraw(void)
 	// set light as headlight
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
-//	float fLightPos[4] = {g_center[0] + g_boundsRadius, g_center[1] + g_boundsRadius, g_center[2]+10.0f*g_boundsRadius, 1.0f};
-	float fLightPos[4] = {g_boundsRadius, g_boundsRadius, 10.0f*g_boundsRadius, 1.0f};
+	//	float fLightPos[4] = {g_center[0] + g_boundsRadius, g_center[1] + g_boundsRadius, g_center[2]+10.0f*g_boundsRadius, 1.0f};
+	float fLightPos[4] = { g_boundsRadius, g_boundsRadius, 10.0f*g_boundsRadius, 1.0f };
 	glLightfv(GL_LIGHT0, GL_POSITION, fLightPos);
-	float fAmbient[4] = {0.2f, 0.2f, 0.2f, 1.0f};
+	float fAmbient[4] = { 0.2f, 0.2f, 0.2f, 1.0f };
 	glLightfv(GL_LIGHT0, GL_AMBIENT, fAmbient);
-	float fDiffuse[4] = {0.6f, 0.6f, 0.6f, 1.0f};
+	float fDiffuse[4] = { 0.6f, 0.6f, 0.6f, 1.0f };
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffuse);
 
 	// construct camera
-	float fTheta = g_viewAngle[0];   
-	float fPhi = std::min((float)M_PI-0.01f, std::max(g_viewAngle[1] + ((float)M_PI/2.0f), 0.01f) );
+	float fTheta = g_viewAngle[0];
+	float fPhi = std::min((float)M_PI - 0.01f, std::max(g_viewAngle[1] + ((float)M_PI / 2.0f), 0.01f));
 	//glm::vec3 eyeVec( cos( fTheta ) * sin( fPhi ),   -cos( fPhi ),  sin( fTheta ) * sin( fPhi ) );
-	glm::vec3 eyeVec( sin( fTheta ) * sin( fPhi ), -cos( fPhi ), cos( fTheta ) * sin( fPhi ) );
-	//eyeVec.Normalize();
+	glm::vec3 eyeVec(sin(fTheta) * sin(fPhi), -cos(fPhi), cos(fTheta) * sin(fPhi));
+	/*eyeVec.Normalize();*/
 	eyeVec = glm::normalize(eyeVec);
 	g_eye = g_center + g_distance*2.0f*g_boundsRadius*eyeVec;
 	gluLookAt(g_eye[0], g_eye[1], g_eye[2], g_center[0], g_center[1], g_center[2], 0, 1, 0);
@@ -101,12 +100,12 @@ static void ondraw(void)
 
 	glDisable(GL_POLYGON_OFFSET_FILL); //Draws Faces
 
-	// draw mesh edges
+									   // draw mesh edges
 	glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_POLYGON_BIT);
 	glDisable(GL_LIGHTING);
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glColor3f(0,0,0);
+	glColor3f(0, 0, 0);
 	g_polygonizer.Mesh().DrawFaces_Smooth(); // Draws Wire Frame
 
 	glPopAttrib();
@@ -124,50 +123,53 @@ static void ondraw(void)
 
 static void onreshape(int width, int height)
 {
-    glViewport(0, 0, width, height);
+	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(45.0f, (float)width / (float)height, 0.01f, 1000.0f);
 	glMatrixMode(GL_MODELVIEW);
-    glutPostRedisplay();
+	glutPostRedisplay();
 }
 static void onkey(unsigned char k, int x, int y)
 {
-  switch (k) {
-  case 27:
-    exit(0);
+	switch (k) {
+	case 27:
+		exit(0);
 
-  case ' ':
-	  RunSimulationStep();
-	  break;
+	case ' ':
+		RunSimulationStep();
+		break;
 
-  }
+	}
 }
 
 static int g_button = -1;
 static int last_x;  int last_y;
 static void onmouse(int b, int state, int x, int y)
 {
-	if ( b == GLUT_LEFT_BUTTON && state == GLUT_DOWN ) {
+	if (b == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
 		g_button = GLUT_LEFT_BUTTON;
-	} else if ( b == GLUT_RIGHT_BUTTON && state == GLUT_DOWN ) {
+	}
+	else if (b == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
 		g_button = GLUT_RIGHT_BUTTON;
-	} else
+	}
+	else
 		g_button = -1;
 
 	last_x = x;		last_y = y;
 }
 static void onmotion(int x, int y)
 {
-	if ( g_button == GLUT_LEFT_BUTTON ) {
+	if (g_button == GLUT_LEFT_BUTTON) {
 		int dx = x - last_x;		int dy = y - last_y;
 		g_viewAngle[0] -= (float)dx * 0.01f;
 		g_viewAngle[1] += (float)dy * 0.01f;
 		glutPostRedisplay();
-	} else if ( g_button == GLUT_RIGHT_BUTTON ) {
+	}
+	else if (g_button == GLUT_RIGHT_BUTTON) {
 		int dx = x - last_x;		int dy = y - last_y;
 		g_distance += (float)dy*0.01f;
-		if ( g_distance < 0.01f )
+		if (g_distance < 0.01f)
 			g_distance = 0.01f;
 		glutPostRedisplay();
 	}
@@ -180,7 +182,7 @@ static void onmotion(int x, int y)
 int _tmain(int argc, _TCHAR* argv[])
 {
 	glutInitWindowSize(1100, 800);
-	glutInitWindowPosition(300,50);
+	glutInitWindowPosition(300, 50);
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 	glutCreateWindow("mesher");

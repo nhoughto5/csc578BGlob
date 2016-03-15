@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <glm\glm.hpp>
 #define SM_VERTEX_STRIDE   3
 #define SM_TRIANGLE_STRIDE 3
 

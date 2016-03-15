@@ -1,5 +1,5 @@
 #include "Spline.h"
-#include <atlas\core\Macros.hpp>
+#include <atlas/core/Macros.hpp>
 Spline::Spline(GLuint totalFrames_, std::vector<atlas::math::Point> controlPoints_, glm::mat4 mBasisMatrix_, int mResolution_, glm::vec3 colour_) :
 	mControlPoints(controlPoints_),
 	mBasisMatrix(mBasisMatrix_),
