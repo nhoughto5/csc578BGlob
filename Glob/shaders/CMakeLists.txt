@@ -5,6 +5,8 @@ set(SHADER_SOURCE
     "${GLOB_SHADER_ROOT}/glob.vs.glsl"
     "${GLOB_SHADER_ROOT}/spline.vs.glsl"
     "${GLOB_SHADER_ROOT}/spline.fs.glsl"
+	"${GLOB_SHADER_ROOT}/structure.vs.glsl"
+    "${GLOB_SHADER_ROOT}/structure.fs.glsl"
     )
 
 set_source_files_properties(${SHADER_SOURCE} 

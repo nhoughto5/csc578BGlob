@@ -24,5 +24,5 @@ void main()
 
 	vec4 ambientColor = ambientLight * vec4(theColour, 1);
 	//colour = ambientColor + clamp(diffuseLight, 0, 1)+ clamp(specularLight, 0, 1);
-	colour = ambientColor + clamp(diffuseLight, 0, 1)+ 0.5 * clamp(specularLight, 0, 1);
+	colour = ambientColor + clamp(diffuseLight, 0, 1)+ clamp(specularLight, 0, 1);
 }

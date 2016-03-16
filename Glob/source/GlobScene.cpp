@@ -18,13 +18,17 @@ GlobScene::GlobScene() :
 	ballPosition{ 4.0f, 0.0f, 4.0f },
 	mCamera(),
 	lightPosition{ -4.0f,5.0f, 0.0f },
-	ambientLight{0.6f, 0.6f, 0.6f, 1.0f},
+	ambientLight{ 0.6f, 0.6f, 0.6f, 1.0f },
+	//mStructure(),
 	mGlob()
 {
 	glEnable(GL_DEPTH_TEST);
 	auto mat = glm::translate(atlas::math::Matrix4(1.0f), ballPosition);
 	mGlob.setLightPosition(lightPosition);
 	mGlob.setAmbientLight(ambientLight);
+	//mStructure.setLightPosition(lightPosition);
+	//mStructure.setAmbientLight(ambientLight);
+
 }
 
 GlobScene::~GlobScene() {
@@ -106,8 +110,6 @@ void GlobScene::keyPressEvent(int key, int scancode, int action, int mods) {
 			mSplineManager.showSplinePoints();
 			break;
 		case GLFW_KEY_ENTER:
-			//mCamera.setTarget(ballPosition);
-			//mCamera.startSlerp(3);
 			mIsPlaying = !mIsPlaying;
 			break;
 		case GLFW_KEY_SPACE:
@@ -133,7 +135,9 @@ void GlobScene::renderScene() {
 	mGrid.renderGeometry(mProjection, mView);
 	//mSplineManager.renderGeometry(mProjection, mView);
 	mGlob.setEyePosition(mCamera.getPosition());
-	mGlob.renderGeometry(mProjection, mView);
+	mGlob.renderGeometry(mProjection, mView);/*
+	mStructure.setEyePosition(mCamera.getPosition());
+	mStructure.renderGeometry(mProjection, mView);*/
 }
 
 void GlobScene::updateScene(double time)

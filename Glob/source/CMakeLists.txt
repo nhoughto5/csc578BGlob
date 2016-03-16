@@ -12,4 +12,6 @@ set(SOURCE_LIST
 	"${GLOB_SOURCE_ROOT}/SimpleMesh.cpp"
 	"${GLOB_SOURCE_ROOT}/stdafx.cpp"
 	"${GLOB_SOURCE_ROOT}/Glob.cpp"
+	"${GLOB_SOURCE_ROOT}/Structure.cpp"
+	"${GLOB_SOURCE_ROOT}/ShapeGenerator.cpp"
     PARENT_SCOPE)

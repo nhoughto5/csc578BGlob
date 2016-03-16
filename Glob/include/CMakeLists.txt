@@ -11,4 +11,8 @@ set(INCLUDE_LIST
 	"${GLOB_INCLUDE_ROOT}/SimpleMesh.h"
 	"${GLOB_INCLUDE_ROOT}/stdafx.h"
 	"${GLOB_INCLUDE_ROOT}/Glob.h"
+	"${GLOB_INCLUDE_ROOT}/Structure.h"
+	"${GLOB_INCLUDE_ROOT}/ShapeGenerator.h"
+	"${GLOB_INCLUDE_ROOT}/ShapeData.h"
+	"${GLOB_INCLUDE_ROOT}/Vertex.h"
     PARENT_SCOPE)

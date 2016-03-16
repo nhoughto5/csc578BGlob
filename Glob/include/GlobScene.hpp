@@ -11,6 +11,7 @@
 #include "Spline.h"
 #include "QuatCamera.h"
 #include "Glob.h"
+#include "Structure.h"
 class GlobScene : public atlas::utils::Scene {
 public:
 	GlobScene();
@@ -36,6 +37,7 @@ private:
 	Grid mGrid;
 	SplineManager mSplineManager;
 	Glob mGlob;
+	//Structure mStructure;
 	std::vector<atlas::math::Point> mControlPoints;
 	glm::vec3 lightPosition;
 	glm::vec4 ambientLight;
