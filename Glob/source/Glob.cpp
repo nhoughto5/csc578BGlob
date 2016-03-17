@@ -48,7 +48,9 @@ Glob::Glob():
 }
 
 Glob::~Glob() {
-
+	glDeleteBuffers(1, &verticesBufferId);
+	glDeleteBuffers(1, &globIndiciesBuffer);
+	glDeleteVertexArrays(1, &mVao);
 }
 void Glob::getIndices() {
 	for (int i = 0; i < 0.5 * verticesBuffer.size(); ++i) {

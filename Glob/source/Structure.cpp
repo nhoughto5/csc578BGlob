@@ -4,9 +4,11 @@ const GLuint VERTEX_BYTE_SIZE = NUM_FLOATS_PER_VERTICE * sizeof(float);
 GLuint planeNumIndices;
 Structure::Structure() : 
 	dimension(20),
-	colour(0.0f, 0.0f, 1.0f)
+	planeColour(0.3f, 0.3f, 0.3f)
 	{
-	ShapeData plane = ShapeGenerator::makePlane();
+	ShapeData plane = ShapeGenerator::makePlane(20, planeColour);
+	glGenVertexArrays(1, &mVao);
+	glBindVertexArray(mVao);
 	glGenBuffers(1, &mBufferID);
 	glGenBuffers(1, &mIndiciesID);
 	glBindBuffer(GL_ARRAY_BUFFER, mBufferID);
@@ -14,8 +16,7 @@ Structure::Structure() :
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndiciesID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, plane.indexBufferSize(), plane.indices, GL_STATIC_DRAW);
 	planeNumIndices = plane.numIndices;
-	glGenVertexArrays(1, &mVao);
-	glBindVertexArray(mVao);
+
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
@@ -36,13 +37,11 @@ Structure::Structure() :
 	mShaders[0]->compileShaders(shaders);
 	mShaders[0]->linkShaders();
 	mUniforms.insert(UniformKey("mvpMat", mShaders[0]->getUniformVariable("mvpMat")));
-/*	mUniforms.insert(UniformKey("lightPositionWorld", mShaders[0]->getUniformVariable("lightPositionWorld")));
+	mUniforms.insert(UniformKey("lightPositionWorld", mShaders[0]->getUniformVariable("lightPositionWorld")));
 	mUniforms.insert(UniformKey("ambientLight", mShaders[0]->getUniformVariable("ambientLight")));
 	mUniforms.insert(UniformKey("eyePositionWorld", mShaders[0]->getUniformVariable("eyePositionWorld")));
 	mUniforms.insert(UniformKey("modelToWorldMatrix", mShaders[0]->getUniformVariable("modelToWorldMatrix")));
-	*/mShaders[0]->disableShaders();
-
-	//mBuffer.clear();
+	mShaders[0]->disableShaders();
 }
 Structure::~Structure() {
 
@@ -56,13 +55,13 @@ void Structure::renderGeometry(atlas::math::Matrix4 projection, atlas::math::Mat
 	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, numIndicies * sizeof(GLushort), &indices[0], GL_STATIC_DRAW);
 
 	mShaders[0]->enableShaders();
-	mModel = glm::translate(Matrix4(1.0f), glm::vec3{ 0.0f,1.0f, 0.0f });
+	mModel = glm::translate(Matrix4(1.0f), glm::vec3{ 0.0f,0.0f, 0.0f });
 	auto mvpMat = projection * view * mModel;
 	glUniformMatrix4fv(mUniforms["mvpMat"], 1, GL_FALSE, &mvpMat[0][0]);
-	//glUniform3fv(mUniforms["lightPositionWorld"], 1, &lightPosition[0]);
-	//glUniform3fv(mUniforms["eyePositionWorld"], 1, &eyePosition[0]);
-	//glUniform4fv(mUniforms["ambientLight"], 1, &ambientLight[0]);
-	//glUniformMatrix4fv(mUniforms["modelToWorldMatrix"], 1, GL_FALSE, &mModel[0][0]);
+	glUniform3fv(mUniforms["lightPositionWorld"], 1, &lightPosition[0]);
+	glUniform3fv(mUniforms["eyePositionWorld"], 1, &eyePosition[0]);
+	glUniform4fv(mUniforms["ambientLight"], 1, &ambientLight[0]);
+	glUniformMatrix4fv(mUniforms["modelToWorldMatrix"], 1, GL_FALSE, &mModel[0][0]);
 	glBindVertexArray(mVao);
 	glDrawElements(GL_TRIANGLES, planeNumIndices, GL_UNSIGNED_SHORT, nullptr);
 	mShaders[0]->disableShaders();

@@ -37,7 +37,7 @@ private:
 	Grid mGrid;
 	SplineManager mSplineManager;
 	Glob mGlob;
-	//Structure mStructure;
+	Structure mStructure;
 	std::vector<atlas::math::Point> mControlPoints;
 	glm::vec3 lightPosition;
 	glm::vec4 ambientLight;

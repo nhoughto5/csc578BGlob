@@ -18,7 +18,7 @@ public:
 	void setEyePosition(glm::vec3 eye);
 private:
 	GLuint mBufferID, mVao, dimension, numVertices, numIndicies, mIndiciesID;
-	glm::vec3 colour;
+	glm::vec3 planeColour;
 	ShapeData plane;
 	glm::vec3 lightPosition, eyePosition;
 	glm::vec4 ambientLight;
