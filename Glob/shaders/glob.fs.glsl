@@ -7,7 +7,7 @@ uniform vec4 ambientLight;
 uniform vec3 eyePositionWorld;
 void main()
 {
-	vec3 theColour = vec3(1.0, 0.0, 0.0f);
+	vec3 theColour = vec3(1.0, 0.0, 1.0f);
 	
 	//Diffuse Light
 	vec3 lightVectorWorld = normalize(lightPositionWorld - vPositionWorld);

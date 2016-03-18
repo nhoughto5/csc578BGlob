@@ -25,7 +25,7 @@ public:
 	void updateScene(double time) override;
 private:
 
-	bool mIsDragging;
+	bool mIsDragging, splineStart;
 	bool mIsPlaying;
 	float mLastTime;
 	float mFPS;

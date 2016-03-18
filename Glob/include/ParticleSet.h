@@ -30,7 +30,10 @@ public:
 	glm::vec3 & F(int i) { return m_F[i]; }
 	float & M(int i) { return m_M[i]; }
 
-	void DrawParticles();
+	//void setSpeed(glm::vec3 speed, int i) { m_V[i] = speed; }
+	//void setAccel(glm::vec3 accel, int i) { m_A[i] = accel; }
+	//void setForce(glm::vec3 force, int i) { m_F[i] = force; }
+	/*void DrawParticles();*/
 
 protected:
 	std::vector<glm::vec3> m_X;		// position
@@ -63,7 +66,7 @@ protected:
 class OriginSpringSimulator : public Simulator
 {
 public:
-	OriginSpringSimulator(float fK = 1.0f, float fB = 0.1f);
+	OriginSpringSimulator(float fK = 1.0f, float fB = 0.1f, float radius = 0.5f);
 
 	virtual void InitializeSimulator();
 	virtual void ComputeForces();
@@ -72,4 +75,5 @@ protected:
 	std::vector<glm::vec3> m_vRestPos;
 	float m_fK;		// spring stiffness
 	float m_fB;		// damping constant
+	float radius;
 };

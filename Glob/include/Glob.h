@@ -25,5 +25,6 @@ private:
 	void getIndices();
 	glm::vec3 lightPosition, eyePosition;
 	glm::vec4 ambientLight;
+	
 };
 #endif // !GLOB_H

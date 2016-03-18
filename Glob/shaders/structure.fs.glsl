@@ -6,6 +6,7 @@ out vec4 outColour;
 uniform vec3 lightPositionWorld;
 uniform vec4 ambientLight;
 uniform vec3 eyePositionWorld;
+uniform float specularStrength;
 void main()
 {	
 	vec3 theColour = vec3(0.0, 0.0, 1.0f);
@@ -24,5 +25,5 @@ void main()
 
 
 	vec4 ambientColor = ambientLight * vec4(colour, 1);
-	outColour = ambientColor + clamp(diffuseLight, 0, 1)+ 0.5 * clamp(specularLight, 0, 1);
+	outColour = ambientColor + clamp(diffuseLight, 0, 1)+ specularStrength * clamp(specularLight, 0, 1);
 }

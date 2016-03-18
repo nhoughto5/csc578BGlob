@@ -6,14 +6,14 @@ const GLuint NUM_FLOATS_PER_VERTICE = 6;
 const GLuint VERTEX_BYTE_SIZE = NUM_FLOATS_PER_VERTICE * sizeof(float);
 USING_ATLAS_GL_NS;
 USING_ATLAS_MATH_NS;
-Glob::Glob(): 
-	g_simulator(1, 0.1)
+GLfloat radius = 2.0f;
+Glob::Glob() :
+	g_simulator(1, 0.5, radius)
 	{
-
-	int start = 4;
-	g_blobs.AddBlob(Blob(glm::vec3(-start, 0, 0), 2));
-	g_blobs.AddBlob(Blob(glm::vec3(start, 0, 0), 2));
-	g_blobs.AddBlob(Blob(glm::vec3(0, 0, start), 2));
+	int start = 4, height = 4.0f;
+	//g_blobs.AddBlob(Blob(glm::vec3(-start, height, 0), radius));
+	//g_blobs.AddBlob(Blob(glm::vec3(start, height, 0), radius));
+	g_blobs.AddBlob(Blob(glm::vec3(0, height+radius/2, start), radius));
 	g_simulator.SetParticles(&g_blobs);
 	g_polygonizer.SetFunction(&g_blobs);
 	g_polygonizer.Initialize();
@@ -60,7 +60,7 @@ void Glob::getIndices() {
 void Glob::renderGeometry(atlas::math::Matrix4 projection, atlas::math::Matrix4 view) {
 	verticesBuffer = g_polygonizer.Mesh().getBufferData();
 	getIndices();
-	mModel = glm::translate(Matrix4(1.0f), glm::vec3{ 0.0f,8.0f, 0.0f });
+	mModel = glm::translate(Matrix4(1.0f), glm::vec3{ 0.0f,0.0f, 0.0f });
 	glBindBuffer(GL_ARRAY_BUFFER, verticesBufferId);
 	glBufferData(GL_ARRAY_BUFFER, verticesBuffer.size() * sizeof(glm::vec3), &verticesBuffer[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, globIndiciesBuffer);
@@ -77,7 +77,9 @@ void Glob::renderGeometry(atlas::math::Matrix4 projection, atlas::math::Matrix4 
 	mShaders[0]->disableShaders();
 }
 void Glob::updateGeometry(atlas::utils::Time const& t) {
-
+	g_simulator.StepSimulation(0.1f);
+	g_blobs.UpdateParticles();
+	g_polygonizer.Polygonize();
 }
 void Glob::RunSimulationStep()
 {

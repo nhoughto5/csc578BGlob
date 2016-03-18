@@ -1,5 +1,5 @@
 #include "ParticleSet.h"
-
+#include <iostream>
 //#include <GL/freeglut.h>
 
 ParticleSet::ParticleSet(void)
@@ -87,40 +87,67 @@ void Simulator::StepSimulation(float dt)
 
 	unsigned int N = m_pParticles->N();
 
-	for ( unsigned int i = 0; i < N; ++i )
-		m_pParticles->X(i) = m_pParticles->X(i) + m_pParticles->V(i)*dt;
+	//for ( unsigned int i = 0; i < N; ++i )
+	//	m_pParticles->X(i) = m_pParticles->X(i) + m_pParticles->V(i)*dt;
 
-	for ( unsigned int i = 0; i < N; ++i ) {
-		m_pParticles->A(i) = m_pParticles->F(i) / m_pParticles->M(i);
+	//for ( unsigned int i = 0; i < N; ++i ) {
+	//	m_pParticles->A(i) = m_pParticles->F(i) / m_pParticles->M(i);
+	//	m_pParticles->V(i) = m_pParticles->V(i) + m_pParticles->A(i)*dt;
+	//}
+
+	for (unsigned int i = 0; i < N; ++i) {
+		m_pParticles->X(i) = m_pParticles->X(i) + m_pParticles->V(i)*dt;
 		m_pParticles->V(i) = m_pParticles->V(i) + m_pParticles->A(i)*dt;
 	}
 
 }
 
-
-
-
-OriginSpringSimulator::OriginSpringSimulator(float fK, float fB)
+OriginSpringSimulator::OriginSpringSimulator(float fK, float fB, float radius_)
 {
-	m_fK = fK;
-	m_fB = fB;
+	m_fK = fK; //The amount of energy lost from blob movement in space
+	m_fB = fB; //Amount of energy lost from contact with another blob
+	radius = radius_;
 }
 
 void OriginSpringSimulator::InitializeSimulator()
 {
+	//Set the rest position between all blobs
 	unsigned int N = m_pParticles->N();
 	m_vRestPos.resize(N);
 	for ( unsigned int i = 0; i < N; ++i ) {
 		m_vRestPos[i] = 0.5f * m_pParticles->X(i);
 	}
 }
-
-
 void OriginSpringSimulator::ComputeForces()
 {
-	unsigned int N = m_pParticles->N();
+	glm::vec3 gravity{ 0.0f, -2.8f, 0.0f }, ground{ 0.0f, 0.0f, 0.0f };
+	float damping = 2.0f;
+	unsigned int N = m_pParticles->N(); //Number of Particles
 	for ( unsigned int i = 0; i < N; ++i ) {
-		glm::vec3 vDelta = (m_pParticles->X(i) - m_vRestPos[i]);
-		m_pParticles->F(i) = - (m_fK*vDelta) - (m_fB*m_pParticles->V(i));
+		glm::vec3 vDelta = (m_pParticles->X(i) - m_vRestPos[i]); //Distance from rest position
+		//m_pParticles->F(i) = -(m_fK*vDelta) - (m_fB*m_pParticles->V(i)) + m_pParticles->M(i) * gravity; //Falling
+		m_pParticles->F(i) =   m_pParticles->M(i) * gravity - m_pParticles->V(i) * damping; //Falling
+		glm::vec3 tempAccel = m_pParticles->A(i) = m_pParticles->F(i) / m_pParticles->M(i);
+		glm::vec3 temp = m_pParticles->GetParticlePosition(i);
+		float distance = glm::abs(temp.y - ground.y);
+		
+		if (distance < 4.0f) {
+			int s = 4;
+		}
+		if ( distance <= radius) {
+			//Stop Condition
+			if (glm::abs(tempAccel.y) < 0.000005f) {
+				m_pParticles->V(i) = glm::vec3{0.0f, 0.0f, 0.0f}; 
+				m_pParticles->A(i) = glm::vec3{ 0.0f, 0.0f, 0.0f };
+				m_pParticles->F(i) = glm::vec3{ 0.0f, 0.0f, 0.0f };
+				std::cout << "Less Vel: " << tempAccel.x << ", " << tempAccel.y << ", " << tempAccel.z << "    Distance: " << distance << "\n";
+			}
+			//Bounce
+			else {
+				glm::vec3 newVel = -0.8f * m_pParticles->V(i);
+				m_pParticles->V(i) = newVel;
+				std::cout << "More Vel: " << m_pParticles->A(i).x << ", " << m_pParticles->A(i).y << ", " << m_pParticles->A(i).z << "    Distance: " << distance << "\n";
+			}
+		}
 	}
 }

@@ -9,6 +9,7 @@ float g_distance = 1;
 float g_boundsRadius = 5;
 GlobScene::GlobScene() :
 	mIsPlaying(false),
+	splineStart(false),
 	mLastTime(0.0f),
 	mFPS(60.0f),
 	mTick(1.0f / mFPS),
@@ -152,8 +153,12 @@ void GlobScene::updateScene(double time)
 		if (mIsPlaying)
 		{
 			mAnimTime += mTick;
+			mGlob.updateGeometry(mTime);
+		}
+		if (splineStart) {
+			mAnimTime += mTick;
 			mSplineManager.updateGeometry(mTime);
-
+			
 			if (mSplineManager.doneInterpolation())
 			{
 				mIsPlaying = false;

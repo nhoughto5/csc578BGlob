@@ -22,7 +22,7 @@ private:
 	GLuint mBufferID, mVao, dimension, numVertices, numIndicies, mIndiciesID, fountainBufferID, fountainIndicesID, fountainArrayObject;
 	glm::vec3 planeColour, fountainColour;
 	ShapeData plane;
-
+	GLfloat planeReflection, fountainReflection;
 	glm::vec3 lightPosition, eyePosition;
 	glm::vec4 ambientLight;
 };

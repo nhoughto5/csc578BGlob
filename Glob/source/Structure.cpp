@@ -6,7 +6,9 @@ GLuint planeNumIndices, fountainNumberOfIndicies;
 Structure::Structure() : 
 	dimension(20),
 	planeColour(0.3f, 0.3f, 0.3f),
-	fountainColour(0.8f, 0.8f, 0.8f)
+	fountainColour((float)249/255, (float)238/255, (float)229/255),
+	planeReflection(0.5),
+	fountainReflection(1)
 	{
 	ShapeData plane = ShapeGenerator::makePlane(25, planeColour);
 	Mesh fountain;
@@ -65,6 +67,7 @@ Structure::Structure() :
 	mUniforms.insert(UniformKey("ambientLight", mShaders[0]->getUniformVariable("ambientLight")));
 	mUniforms.insert(UniformKey("eyePositionWorld", mShaders[0]->getUniformVariable("eyePositionWorld")));
 	mUniforms.insert(UniformKey("modelToWorldMatrix", mShaders[0]->getUniformVariable("modelToWorldMatrix")));
+	mUniforms.insert(UniformKey("specularStrength", mShaders[0]->getUniformVariable("specularStrength")));
 	mShaders[0]->disableShaders();
 }
 Structure::~Structure() {
@@ -81,9 +84,11 @@ void Structure::renderGeometry(atlas::math::Matrix4 projection, atlas::math::Mat
 	glUniform3fv(mUniforms["eyePositionWorld"], 1, &eyePosition[0]);
 	glUniform4fv(mUniforms["ambientLight"], 1, &ambientLight[0]);
 	glUniformMatrix4fv(mUniforms["modelToWorldMatrix"], 1, GL_FALSE, &mModel[0][0]);
+	glUniform1f(mUniforms["specularStrength"], planeReflection);
 	glBindVertexArray(mVao);
 	glDrawElements(GL_TRIANGLES, planeNumIndices, GL_UNSIGNED_SHORT, nullptr);
 	glBindVertexArray(fountainArrayObject);
+	glUniform1f(mUniforms["specularStrength"], fountainReflection);
 	glDrawElements(GL_TRIANGLES, fountainNumberOfIndicies, GL_UNSIGNED_SHORT, nullptr);
 	mShaders[0]->disableShaders();
 }
