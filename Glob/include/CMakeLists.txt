@@ -15,4 +15,5 @@ set(INCLUDE_LIST
 	"${GLOB_INCLUDE_ROOT}/ShapeGenerator.h"
 	"${GLOB_INCLUDE_ROOT}/ShapeData.h"
 	"${GLOB_INCLUDE_ROOT}/Vertex.h"
+	"${GLOB_INCLUDE_ROOT}/Mesh.h"
     PARENT_SCOPE)

@@ -14,4 +14,5 @@ set(SOURCE_LIST
 	"${GLOB_SOURCE_ROOT}/Glob.cpp"
 	"${GLOB_SOURCE_ROOT}/Structure.cpp"
 	"${GLOB_SOURCE_ROOT}/ShapeGenerator.cpp"
+	"${GLOB_SOURCE_ROOT}/Mesh.cpp"
     PARENT_SCOPE)

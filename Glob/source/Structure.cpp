@@ -1,12 +1,18 @@
 #include "Structure.h"
+#include "Mesh.h"
 const GLuint NUM_FLOATS_PER_VERTICE = 9;
 const GLuint VERTEX_BYTE_SIZE = NUM_FLOATS_PER_VERTICE * sizeof(float);
-GLuint planeNumIndices;
+GLuint planeNumIndices, fountainNumberOfIndicies;
 Structure::Structure() : 
 	dimension(20),
-	planeColour(0.3f, 0.3f, 0.3f)
+	planeColour(0.3f, 0.3f, 0.3f),
+	fountainColour(0.8f, 0.8f, 0.8f)
 	{
-	ShapeData plane = ShapeGenerator::makePlane(20, planeColour);
+	ShapeData plane = ShapeGenerator::makePlane(25, planeColour);
+	Mesh fountain;
+	fountain.setColour(fountainColour);
+	fountain.LoadObjModel("C:/Users/Nick/Desktop/NickTop/HomeWork/Elec 578B/A2/csc578BGlob/Glob/lowfountain.obj");
+
 	glGenVertexArrays(1, &mVao);
 	glBindVertexArray(mVao);
 	glGenBuffers(1, &mBufferID);
@@ -24,6 +30,24 @@ Structure::Structure() :
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZE, (void*)(3 * sizeof(float))); //Define vertex normal buffer locations
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZE, (void*)(6 * sizeof(float))); //Define vertex color buffer locations
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndiciesID);
+
+	glGenVertexArrays(1, &fountainArrayObject);
+	glBindVertexArray(fountainArrayObject);
+	glGenBuffers(1, &fountainBufferID);
+	glGenBuffers(1, &fountainIndicesID);
+	glBindBuffer(GL_ARRAY_BUFFER, fountainBufferID);
+	fountainData = fountain.returnMesh();
+	fountainIndicies = fountain.getIndicies();
+	glBufferData(GL_ARRAY_BUFFER, fountain.vertexBufferSize(), &fountainData[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, fountainIndicesID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, fountain.indexBufferSize(), &fountainIndicies[0], GL_STATIC_DRAW);
+	fountainNumberOfIndicies = fountain.indiciesCount();
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZE, 0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZE, (void*)(3 * sizeof(float))); //Define vertex normal buffer locations
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZE, (void*)(6 * sizeof(float))); //Define vertex color buffer locations
 
 	std::string shaderDir = generated::ShaderPaths::getShaderDirectory();
 
@@ -48,11 +72,6 @@ Structure::~Structure() {
 }
 
 void Structure::renderGeometry(atlas::math::Matrix4 projection, atlas::math::Matrix4 view) {
-	
-	//glBindBuffer(GL_ARRAY_BUFFER, mBufferID);
-	//glBufferData(GL_ARRAY_BUFFER, mBuffer.size() * sizeof(glm::vec3), &mBuffer[0], GL_STATIC_DRAW);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, numIndicies);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, numIndicies * sizeof(GLushort), &indices[0], GL_STATIC_DRAW);
 
 	mShaders[0]->enableShaders();
 	mModel = glm::translate(Matrix4(1.0f), glm::vec3{ 0.0f,0.0f, 0.0f });
@@ -64,6 +83,8 @@ void Structure::renderGeometry(atlas::math::Matrix4 projection, atlas::math::Mat
 	glUniformMatrix4fv(mUniforms["modelToWorldMatrix"], 1, GL_FALSE, &mModel[0][0]);
 	glBindVertexArray(mVao);
 	glDrawElements(GL_TRIANGLES, planeNumIndices, GL_UNSIGNED_SHORT, nullptr);
+	glBindVertexArray(fountainArrayObject);
+	glDrawElements(GL_TRIANGLES, fountainNumberOfIndicies, GL_UNSIGNED_SHORT, nullptr);
 	mShaders[0]->disableShaders();
 }
 void Structure::setLightPosition(glm::vec3 LP) {

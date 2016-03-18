@@ -17,7 +17,7 @@ GlobScene::GlobScene() :
 	mSplineManager(int(mAnimLength * mFPS)),
 	ballPosition{ 4.0f, 0.0f, 4.0f },
 	mCamera(),
-	lightPosition{ 4.0f,5.0f, 0.0f },
+	lightPosition{ 14.0f,5.0f, 0.0f },
 	ambientLight{ 0.6f, 0.6f, 0.6f, 1.0f },
 	mStructure(),
 	mGlob()
