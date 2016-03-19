@@ -7,8 +7,8 @@ const GLuint VERTEX_BYTE_SIZE = NUM_FLOATS_PER_VERTICE * sizeof(float);
 USING_ATLAS_GL_NS;
 USING_ATLAS_MATH_NS;
 GLfloat radius = 0.50f;
-glm::vec3 fountainSpout{0.0f, 1.7f, 0.0f};
-//glm::vec3 fountainSpout{ 0.0f, 11.0f, 0.0f };
+//glm::vec3 fountainSpout{0.0f, 9.0f, 0.0f};
+glm::vec3 fountainSpout{ 0.0f, 1.75f, 0.0f };
 //glm::vec3 startVelocity{ 0.0f, 0.0f, 0.0f };
 glm::vec3 startVelocity{ 0.0f, 3.0f, 5.5f };
 Glob::Glob(GLuint planeSize_) :
