@@ -13,8 +13,8 @@ public:
 	virtual glm::vec3 GetParticlePosition(int i) const = 0;
 	virtual glm::vec3 GetStartVelocity(int i) const = 0;
 	virtual void SetParticlePosition( int i, const glm::vec3 & vPosition) = 0;
-
-	void InitializeParticles();
+	virtual glm::vec3 newFountainVelocity() = 0;
+	void InitializeParticles(float liveTime);
 	void UpdateParticles();
 
 	unsigned int N() const { return (unsigned int)m_X.size(); }
@@ -24,12 +24,14 @@ public:
 	const glm::vec3 & A(int i) const { return m_A[i]; }
 	const glm::vec3 & F(int i) const { return m_F[i]; }
 	float M(int i) const { return m_M[i]; }
+	float time(int i) const { return timeToLive[i]; }
 
 	glm::vec3 & X(int i) { return m_X[i]; }
 	glm::vec3 & V(int i) { return m_V[i]; }
 	glm::vec3 & A(int i) { return m_A[i]; }
 	glm::vec3 & F(int i) { return m_F[i]; }
 	float & M(int i) { return m_M[i]; }
+	float & time(int i) { return timeToLive[i]; }
 	/*void DrawParticles();*/
 
 protected:
@@ -38,6 +40,7 @@ protected:
 	std::vector<glm::vec3> m_A;		// acceleration
 	std::vector<glm::vec3> m_F;		// force
 	std::vector<float> m_M;			// mass
+	std::vector<float> timeToLive;
 };
 
 
@@ -48,12 +51,11 @@ public:
 	Simulator();
 	~Simulator();
 
-	void SetParticles(ParticleSet * pParticles);
+	void SetParticles(ParticleSet * pParticles, float liveTime);
 	virtual void InitializeSimulator() = 0;
-
 	void StepSimulation(float dt);
-	virtual void ComputeForces() = 0;
-
+	virtual void ComputeForces(float dt) = 0;
+	virtual void resetParticle(int i) = 0;
 protected:
 	ParticleSet * m_pParticles;
 };
@@ -63,15 +65,18 @@ protected:
 class OriginSpringSimulator : public Simulator
 {
 public:
-	OriginSpringSimulator(float fK = 1.0f, float fB = 0.1f, float radius = 0.5f, GLuint planeSize_=20);
+	OriginSpringSimulator(float fK = 1.0f, float fB = 0.1f, float radius = 0.5f, GLuint planeSize_ = 20, float bottom_ = -5.0f, glm::vec3 fountainHead_ = glm::vec3{0.0f, 1.7f, 0.0f}, float timeToLive_ = 5.0f);
 
 	virtual void InitializeSimulator();
-	virtual void ComputeForces();
-
+	virtual void ComputeForces(float dt);
+	virtual void resetParticle(int i);
 protected:
 	std::vector<glm::vec3> m_vRestPos;
 	float m_fK;		// spring stiffness
 	float m_fB;		// damping constant
 	float radius;
 	GLuint planeSize;
+	float bottom;
+	glm::vec3 fountainHead;
+	float timeToLive;
 };

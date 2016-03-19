@@ -11,7 +11,7 @@ class Blob : public ImplicitFunction
 {
 public:
 	Blob( ) { m_vPosition = glm::vec3(0.0f); m_fRadius = 1; }
-	Blob(const glm::vec3 & pos, float fRadius, glm::vec3 v0_) { m_vPosition = pos; m_fRadius = fRadius; v0 = v0_; }
+	Blob(const glm::vec3 & pos, float fRadius) { m_vPosition = pos; m_fRadius = fRadius;}
 
 	/* ImplicitFunction interface */
 	virtual float Value(float x, float y, float z) const;
@@ -37,7 +37,11 @@ public:
 	~BlobSet(void);
 
 	void AddBlob( const Blob & b ) { m_vBlobs.push_back(b); }
-
+	void AddBlobs(int numberOfBlobs, glm::vec3 fountainSpout, float radius) {
+		for (int i = 0; i < numberOfBlobs; ++i) {
+			m_vBlobs.push_back(Blob(fountainSpout, radius));
+		}
+	}
 	/* ImplicitFunction interface */
 
 	virtual float Value(float x, float y, float z) const;
@@ -49,7 +53,16 @@ public:
 	virtual glm::vec3 GetParticlePosition(int i) const { return m_vBlobs[i].Position(); }
 	virtual glm::vec3 GetStartVelocity(int i) const { return m_vBlobs[i].startVel(); }
 	virtual void SetParticlePosition( int i, const glm::vec3 & vPosition) { m_vBlobs[i].Position() = vPosition; }
-	
+
+	virtual glm::vec3 newFountainVelocity() {
+		float upperLimit = 6.0f, lowerLimit = 3.0f;
+		glm::vec3 test{ 0.0f, 6.0f, 7.0f };
+		glm::vec3 vel;
+		vel.x = (-upperLimit) + (float)(rand()) / ((float)(RAND_MAX / (upperLimit - (-upperLimit))));
+		vel.y = lowerLimit + (float) (rand()) / ((float) (RAND_MAX / (upperLimit - lowerLimit)));
+		vel.z = (-upperLimit) + (float)(rand()) / ((float)(RAND_MAX / (upperLimit - (-upperLimit))));;
+		return vel;
+	}
 protected:
 	std::vector<Blob> m_vBlobs;
 };
