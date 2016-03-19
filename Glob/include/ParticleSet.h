@@ -11,6 +11,7 @@ public:
 
 	virtual unsigned int ParticleCount() const = 0;
 	virtual glm::vec3 GetParticlePosition(int i) const = 0;
+	virtual glm::vec3 GetStartVelocity(int i) const = 0;
 	virtual void SetParticlePosition( int i, const glm::vec3 & vPosition) = 0;
 
 	void InitializeParticles();
@@ -29,10 +30,6 @@ public:
 	glm::vec3 & A(int i) { return m_A[i]; }
 	glm::vec3 & F(int i) { return m_F[i]; }
 	float & M(int i) { return m_M[i]; }
-
-	//void setSpeed(glm::vec3 speed, int i) { m_V[i] = speed; }
-	//void setAccel(glm::vec3 accel, int i) { m_A[i] = accel; }
-	//void setForce(glm::vec3 force, int i) { m_F[i] = force; }
 	/*void DrawParticles();*/
 
 protected:
@@ -40,7 +37,7 @@ protected:
 	std::vector<glm::vec3> m_V;		// velocity
 	std::vector<glm::vec3> m_A;		// acceleration
 	std::vector<glm::vec3> m_F;		// force
-	std::vector<float> m_M;				// mass
+	std::vector<float> m_M;			// mass
 };
 
 

@@ -6,14 +6,17 @@ const GLuint NUM_FLOATS_PER_VERTICE = 6;
 const GLuint VERTEX_BYTE_SIZE = NUM_FLOATS_PER_VERTICE * sizeof(float);
 USING_ATLAS_GL_NS;
 USING_ATLAS_MATH_NS;
-GLfloat radius = 2.0f;
+GLfloat radius = 0.50f;
+glm::vec3 fountainSpout{0.0f, 1.7f, 0.0f};
+glm::vec3 startVelocity{ 0.0f, 5.0f, 4.0f };
 Glob::Glob() :
 	g_simulator(1, 0.5, radius)
 	{
 	int start = 4, height = 4.0f;
 	//g_blobs.AddBlob(Blob(glm::vec3(-start, height, 0), radius));
 	//g_blobs.AddBlob(Blob(glm::vec3(start, height, 0), radius));
-	g_blobs.AddBlob(Blob(glm::vec3(0, height+radius/2, start), radius));
+	//g_blobs.AddBlob(Blob(glm::vec3(0, height, start), radius));
+	g_blobs.AddBlob(Blob(fountainSpout, radius, startVelocity));
 	g_simulator.SetParticles(&g_blobs);
 	g_polygonizer.SetFunction(&g_blobs);
 	g_polygonizer.Initialize();

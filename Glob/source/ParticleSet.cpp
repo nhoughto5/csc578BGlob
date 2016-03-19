@@ -22,7 +22,8 @@ void ParticleSet::InitializeParticles()
 
 	for ( unsigned int k = 0; k < nCount; ++k ) {
 		m_X[k] = GetParticlePosition(k);
-		m_V[k] = glm::vec3(0,0,0);
+		//m_V[k] = glm::vec3(0, 0, 0);
+		m_V[k] = GetStartVelocity(k);
 		m_A[k] = glm::vec3(0,0,0);
 		m_F[k] = glm::vec3(0,0,0);
 		m_M[k] = 1.0f;
@@ -87,18 +88,18 @@ void Simulator::StepSimulation(float dt)
 
 	unsigned int N = m_pParticles->N();
 
-	//for ( unsigned int i = 0; i < N; ++i )
-	//	m_pParticles->X(i) = m_pParticles->X(i) + m_pParticles->V(i)*dt;
-
-	//for ( unsigned int i = 0; i < N; ++i ) {
-	//	m_pParticles->A(i) = m_pParticles->F(i) / m_pParticles->M(i);
-	//	m_pParticles->V(i) = m_pParticles->V(i) + m_pParticles->A(i)*dt;
-	//}
-
-	for (unsigned int i = 0; i < N; ++i) {
+	for ( unsigned int i = 0; i < N; ++i )
 		m_pParticles->X(i) = m_pParticles->X(i) + m_pParticles->V(i)*dt;
+
+	for ( unsigned int i = 0; i < N; ++i ) {
+		m_pParticles->A(i) = m_pParticles->F(i) / m_pParticles->M(i);
 		m_pParticles->V(i) = m_pParticles->V(i) + m_pParticles->A(i)*dt;
 	}
+
+	//for (unsigned int i = 0; i < N; ++i) {
+	//	m_pParticles->X(i) = m_pParticles->X(i) + m_pParticles->V(i)*dt;
+	//	m_pParticles->V(i) = m_pParticles->V(i) + m_pParticles->A(i)*dt;
+	//}
 
 }
 
@@ -115,39 +116,38 @@ void OriginSpringSimulator::InitializeSimulator()
 	unsigned int N = m_pParticles->N();
 	m_vRestPos.resize(N);
 	for ( unsigned int i = 0; i < N; ++i ) {
-		m_vRestPos[i] = 0.5f * m_pParticles->X(i);
+		/*m_vRestPos[i] = 0.5f * m_pParticles->X(i);*/
+		m_vRestPos[i].x = 0.5f * m_pParticles->X(i).x;
+		m_vRestPos[i].y = m_pParticles->X(i).y;
+		m_vRestPos[i].z = 0.5f * m_pParticles->X(i).z;
 	}
 }
 void OriginSpringSimulator::ComputeForces()
 {
 	glm::vec3 gravity{ 0.0f, -2.8f, 0.0f }, ground{ 0.0f, 0.0f, 0.0f };
-	float damping = 2.0f;
+	float restitution = 0.8f;
+	float damping = 0.50f;
 	unsigned int N = m_pParticles->N(); //Number of Particles
 	for ( unsigned int i = 0; i < N; ++i ) {
 		glm::vec3 vDelta = (m_pParticles->X(i) - m_vRestPos[i]); //Distance from rest position
-		//m_pParticles->F(i) = -(m_fK*vDelta) - (m_fB*m_pParticles->V(i)) + m_pParticles->M(i) * gravity; //Falling
+		//m_pParticles->F(i) = -(m_fK*vDelta) - (m_fB*m_pParticles->V(i)); //Attraction
+		//m_pParticles->F(i) = -(m_fK*vDelta) - (m_fB*m_pParticles->V(i)) + m_pParticles->M(i) * gravity; //Falling + Attraction
 		m_pParticles->F(i) =   m_pParticles->M(i) * gravity - m_pParticles->V(i) * damping; //Falling
-		glm::vec3 tempAccel = m_pParticles->A(i) = m_pParticles->F(i) / m_pParticles->M(i);
+		m_pParticles->A(i) = m_pParticles->F(i) / m_pParticles->M(i);
 		glm::vec3 temp = m_pParticles->GetParticlePosition(i);
-		float distance = glm::abs(temp.y - ground.y);
-		
-		if (distance < 4.0f) {
-			int s = 4;
-		}
-		if ( distance <= radius) {
-			//Stop Condition
-			if (glm::abs(tempAccel.y) < 0.000005f) {
-				m_pParticles->V(i) = glm::vec3{0.0f, 0.0f, 0.0f}; 
-				m_pParticles->A(i) = glm::vec3{ 0.0f, 0.0f, 0.0f };
-				m_pParticles->F(i) = glm::vec3{ 0.0f, 0.0f, 0.0f };
-				std::cout << "Less Vel: " << tempAccel.x << ", " << tempAccel.y << ", " << tempAccel.z << "    Distance: " << distance << "\n";
-			}
-			//Bounce
-			else {
-				glm::vec3 newVel = -0.8f * m_pParticles->V(i);
-				m_pParticles->V(i) = newVel;
-				std::cout << "More Vel: " << m_pParticles->A(i).x << ", " << m_pParticles->A(i).y << ", " << m_pParticles->A(i).z << "    Distance: " << distance << "\n";
-			}
+		float distance = temp.y - ground.y;
+		//Hit Ground
+		float closeToGround = 0.515f;
+		if (distance <= closeToGround) {
+			m_pParticles->V(i) = glm::vec3{ 0.0f, 0.0f, 0.0f };
 		}
 	}
 }
+//void OriginSpringSimulator::ComputeForces()
+//{
+//	unsigned int N = m_pParticles->N();
+//	for (unsigned int i = 0; i < N; ++i) {
+//		glm::vec3 vDelta = (m_pParticles->X(i) - m_vRestPos[i]);
+//		m_pParticles->F(i) = -(m_fK*vDelta) - (m_fB*m_pParticles->V(i));
+//	}
+//}
