@@ -139,7 +139,7 @@ void OriginSpringSimulator::ComputeForces()
 		//Hit Ground
 		float closeToGround = 0.515f;
 		if (distance <= closeToGround) {
-			m_pParticles->V(i) = glm::vec3{ 0.0f, 0.0f, 0.0f };
+			m_pParticles->V(i).y = 0.0f;
 		}
 	}
 }
