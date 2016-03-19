@@ -7,6 +7,7 @@
 
 float g_distance = 1;
 float g_boundsRadius = 5;
+GLuint planeSize = 20;
 GlobScene::GlobScene() :
 	mIsPlaying(false),
 	splineStart(false),
@@ -20,8 +21,8 @@ GlobScene::GlobScene() :
 	mCamera(),
 	lightPosition{ 14.0f,5.0f, 0.0f },
 	ambientLight{ 0.6f, 0.6f, 0.6f, 1.0f },
-	mStructure(),
-	mGlob()
+	mStructure(planeSize),
+	mGlob(planeSize)
 {
 	glEnable(GL_DEPTH_TEST);
 	auto mat = glm::translate(atlas::math::Matrix4(1.0f), ballPosition);

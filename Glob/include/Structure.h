@@ -9,7 +9,7 @@ USING_ATLAS_GL_NS;
 USING_ATLAS_MATH_NS;
 class Structure : public atlas::utils::Geometry {
 public:
-	Structure();
+	Structure(GLuint dimension_);
 	~Structure();
 
 	void renderGeometry(atlas::math::Matrix4 projection, atlas::math::Matrix4 view) override;

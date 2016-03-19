@@ -3,14 +3,14 @@
 const GLuint NUM_FLOATS_PER_VERTICE = 9;
 const GLuint VERTEX_BYTE_SIZE = NUM_FLOATS_PER_VERTICE * sizeof(float);
 GLuint planeNumIndices, fountainNumberOfIndicies;
-Structure::Structure() : 
-	dimension(20),
+Structure::Structure(GLuint dimension_) :
+	dimension(dimension_),
 	planeColour(0.3f, 0.3f, 0.3f),
 	fountainColour((float)249/255, (float)238/255, (float)229/255),
 	planeReflection(0.5),
 	fountainReflection(1)
 	{
-	ShapeData plane = ShapeGenerator::makePlane(25, planeColour);
+	ShapeData plane = ShapeGenerator::makePlane(dimension, planeColour);
 	Mesh fountain;
 	fountain.setColour(fountainColour);
 	fountain.LoadObjModel("C:/Users/Nick/Desktop/NickTop/HomeWork/Elec 578B/A2/csc578BGlob/Glob/lowfountain.obj");

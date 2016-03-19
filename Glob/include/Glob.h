@@ -7,7 +7,7 @@
 #include "ShaderPaths.hpp"
 class Glob : public atlas::utils::Geometry{
 public:
-	Glob();
+	Glob(GLuint planeSize_);
 	~Glob();
 	void renderGeometry(atlas::math::Matrix4 projection, atlas::math::Matrix4 view) override;
 	void updateGeometry(atlas::utils::Time const& t) override;
@@ -16,7 +16,7 @@ public:
 	void setAmbientLight(glm::vec4 aL);
 	void setEyePosition(glm::vec3 eye);
 private:
-	GLuint verticesBufferId, mVao, globIndiciesBuffer;
+	GLuint verticesBufferId, mVao, globIndiciesBuffer, planeSize;
 	BlobSet g_blobs;
 	OriginSpringSimulator g_simulator;
 	ImplicitPolygonizer g_polygonizer;

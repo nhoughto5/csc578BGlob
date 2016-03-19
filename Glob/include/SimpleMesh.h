@@ -20,7 +20,9 @@ public:
 	void reset();
 
 	size_t vertex_count() { return m_vVertices.size() / SM_VERTEX_STRIDE; }
-	size_t triangle_count() { return m_vTriangles.size() / SM_TRIANGLE_STRIDE; }
+	size_t triangle_count() { 
+		return m_vTriangles.size() / SM_TRIANGLE_STRIDE; 
+	}
 
 	int add_vertex();
 	int add_vertex(float * position, float * normal);

@@ -52,8 +52,8 @@ bool ImplicitPolygonizer::Initialize()
 		pg_destroy_polygonizer((polygonizer *)m_pPolygonizer);
 		m_pPolygonizer = NULL;
 	}
-
-	aabb bounds( -10,-10,-10,  10,10,10 );
+	int value = 10;
+	aabb bounds( -value,-value,-value, value, value, value);
 	int grid_resolution = 100;
 
 	m_pPolygonizer = MakePolygonizer(this, &bounds, grid_resolution, 10);

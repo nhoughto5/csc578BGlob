@@ -33,9 +33,9 @@ ShapeData ShapeGenerator::makePlaneIndices(uint dimensions)
 	ret.numIndices = (dimensions - 1) * (dimensions - 1) * 2 * 3; // 2 triangles per square, 3 indices per triangle
 	ret.indices = new unsigned short[ret.numIndices];
 	int runner = 0;
-	for (int row = 0; row < dimensions - 1; row++)
+	for (int row = 0; row < dimensions-1; row++)
 	{
-		for (int col = 0; col < dimensions - 1; col++)
+		for (int col = 0; col < dimensions-1; col++)
 		{
 			ret.indices[runner++] = dimensions * row + col;
 			ret.indices[runner++] = dimensions * row + col + dimensions;

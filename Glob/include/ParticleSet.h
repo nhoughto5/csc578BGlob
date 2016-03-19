@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <vector>
-
+#include <atlas\utils\Geometry.hpp>
 class ParticleSet
 {
 public:
@@ -63,7 +63,7 @@ protected:
 class OriginSpringSimulator : public Simulator
 {
 public:
-	OriginSpringSimulator(float fK = 1.0f, float fB = 0.1f, float radius = 0.5f);
+	OriginSpringSimulator(float fK = 1.0f, float fB = 0.1f, float radius = 0.5f, GLuint planeSize_=20);
 
 	virtual void InitializeSimulator();
 	virtual void ComputeForces();
@@ -73,4 +73,5 @@ protected:
 	float m_fK;		// spring stiffness
 	float m_fB;		// damping constant
 	float radius;
+	GLuint planeSize;
 };

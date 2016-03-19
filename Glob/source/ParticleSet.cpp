@@ -103,11 +103,12 @@ void Simulator::StepSimulation(float dt)
 
 }
 
-OriginSpringSimulator::OriginSpringSimulator(float fK, float fB, float radius_)
+OriginSpringSimulator::OriginSpringSimulator(float fK, float fB, float radius_, GLuint planeSize_)
 {
 	m_fK = fK; //The amount of energy lost from blob movement in space
 	m_fB = fB; //Amount of energy lost from contact with another blob
 	radius = radius_;
+	planeSize = planeSize_;
 }
 
 void OriginSpringSimulator::InitializeSimulator()
@@ -134,12 +135,16 @@ void OriginSpringSimulator::ComputeForces()
 		//m_pParticles->F(i) = -(m_fK*vDelta) - (m_fB*m_pParticles->V(i)) + m_pParticles->M(i) * gravity; //Falling + Attraction
 		m_pParticles->F(i) =   m_pParticles->M(i) * gravity - m_pParticles->V(i) * damping; //Falling
 		m_pParticles->A(i) = m_pParticles->F(i) / m_pParticles->M(i);
-		glm::vec3 temp = m_pParticles->GetParticlePosition(i);
-		float distance = temp.y - ground.y;
+		glm::vec3 pos = m_pParticles->GetParticlePosition(i);
+		float distance = pos.y - ground.y;
 		//Hit Ground
 		float closeToGround = 0.515f;
-		if (distance <= closeToGround) {
+		std::cout << "PlaneSize: " << planeSize << "  pos:" << pos.x << ", " << pos.y << ", " << pos.z << "\n";
+		if (distance <= closeToGround && ((pos.x <= (float)planeSize)&&(pos.z <= (float)planeSize))) {
 			m_pParticles->V(i).y = 0.0f;
+		}
+		if (distance <= closeToGround && ((pos.x > (float)planeSize) || (pos.z > (float)planeSize))) {
+			std::cout << "Over\n";
 		}
 	}
 }

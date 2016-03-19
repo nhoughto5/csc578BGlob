@@ -8,15 +8,18 @@ USING_ATLAS_GL_NS;
 USING_ATLAS_MATH_NS;
 GLfloat radius = 0.50f;
 glm::vec3 fountainSpout{0.0f, 1.7f, 0.0f};
-glm::vec3 startVelocity{ 0.0f, 5.0f, 4.0f };
-Glob::Glob() :
-	g_simulator(1, 0.5, radius)
+//glm::vec3 fountainSpout{ 0.0f, 11.0f, 0.0f };
+//glm::vec3 startVelocity{ 0.0f, 0.0f, 0.0f };
+glm::vec3 startVelocity{ 0.0f, 3.0f, 5.5f };
+Glob::Glob(GLuint planeSize_) :
+	g_simulator(1, 0.5, radius, planeSize_ / 2),
+	planeSize(planeSize_)
 	{
 	int start = 4, height = 4.0f;
-	//g_blobs.AddBlob(Blob(glm::vec3(-start, height, 0), radius));
-	//g_blobs.AddBlob(Blob(glm::vec3(start, height, 0), radius));
-	//g_blobs.AddBlob(Blob(glm::vec3(0, height, start), radius));
-	g_blobs.AddBlob(Blob(fountainSpout, radius, startVelocity));
+
+	g_blobs.AddBlob(Blob(fountainSpout, radius, startVelocity));/*
+	g_blobs.AddBlob(Blob(fountainSpout, radius, glm::vec3{2.1f, 4.8f, 3.6f}));
+	g_blobs.AddBlob(Blob(fountainSpout, radius, glm::vec3{2.7f, 5.4f, 1.3f}));*/
 	g_simulator.SetParticles(&g_blobs);
 	g_polygonizer.SetFunction(&g_blobs);
 	g_polygonizer.Initialize();
