@@ -55,6 +55,7 @@ public:
 	virtual void InitializeSimulator() = 0;
 	void StepSimulation(float dt);
 	virtual void ComputeForces(float dt) = 0;
+	virtual glm::vec3 interGlobularForce(int i) = 0;
 	virtual void resetParticle(int i) = 0;
 protected:
 	ParticleSet * m_pParticles;
@@ -69,6 +70,7 @@ public:
 
 	virtual void InitializeSimulator();
 	virtual void ComputeForces(float dt);
+	virtual glm::vec3 interGlobularForce(int i);
 	virtual void resetParticle(int i);
 protected:
 	std::vector<glm::vec3> m_vRestPos;

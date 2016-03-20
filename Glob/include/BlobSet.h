@@ -58,9 +58,9 @@ public:
 		float upperLimit = 6.0f, lowerLimit = 3.0f;
 		glm::vec3 test{ 0.0f, 6.0f, 7.0f };
 		glm::vec3 vel;
-		vel.x = (-upperLimit) + (float)(rand()) / ((float)(RAND_MAX / (upperLimit - (-upperLimit))));
+		vel.x = 0.0f;// (-upperLimit) + (float)(rand()) / ((float)(RAND_MAX / (upperLimit - (-upperLimit))));
 		vel.y = lowerLimit + (float) (rand()) / ((float) (RAND_MAX / (upperLimit - lowerLimit)));
-		vel.z = (-upperLimit) + (float)(rand()) / ((float)(RAND_MAX / (upperLimit - (-upperLimit))));;
+		vel.z = 0.0f;//(-upperLimit) + (float)(rand()) / ((float)(RAND_MAX / (upperLimit - (-upperLimit))));;
 		return vel;
 	}
 protected:

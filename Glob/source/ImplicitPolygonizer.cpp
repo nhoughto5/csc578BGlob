@@ -534,9 +534,11 @@ void pg_destroy_polygonizer(polygonizer * p)
 	free(p);
 }
 
-
+int myCount;
 char * pg_polygonize(polygonizer * p)
 {
+	/*std::cout << "pg_polygonize: " << myCount++;*/
+
 	int next_seed;
 	float inValue, outValue;
 	int ijk[3], n, noabort;
@@ -560,6 +562,9 @@ char * pg_polygonize(polygonizer * p)
 		inside or outside the surface surface. This is just
 		unlucky. We can avoid this by testing to make sure the first
 		cube contains the surface later on [RMS] */
+		//if (myCount == 36) {
+		//	int x = 4;
+		//}
 		converge(&in, &out, inValue, outValue, p->wrapper->Function(), &start_point, p->convergence);
 
 		/* add first cube */
@@ -611,12 +616,12 @@ char * pg_polygonize(polygonizer * p)
 	}
 
 
-	/* handy for odd bugs
-	printf("Finished Polygonizing. Mesh has %d vertices and %d triangles/n",
-	p->mesh->vertex_count, p->mesh->triangle_count);
-	if(p->mesh->triangle_count == 0)
-	abort();
-	*/
+	//handy for odd bugs
+	//printf("     Finished Polygonizing. Mesh has %d vertices and %d triangles\n", p->wrapper->Mesh().m_vVertices.size(), p->wrapper->Mesh().m_vTriangles.size());
+	//if (p->wrapper->Mesh().m_vVertices.size() == 0) {
+	//	int s = 4;
+	//}
+	
 
 	return NULL;
 }
@@ -788,9 +793,12 @@ int docube(MC_CUBE * cube, polygonizer * p)
 {
 	MC_INTLISTS *polys;
 	int i, index = 0;
-	for (i = 0; i < 8; i++)
-		if (cube->corners[i]->value > 0.0)
+	for (i = 0; i < 8; i++) {
+		if (cube->corners[i]->value > 0.0) {
 			index += (1 << i);
+		}
+		
+	}
 	for (polys = p->cubetable[index]; polys; polys = polys->next) {
 		MC_INTLIST *edges;
 		int a = -1, b = -1, count = 0;

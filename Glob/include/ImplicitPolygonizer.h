@@ -17,7 +17,6 @@ public:
 
 	bool Initialize();
 	bool Polygonize();
-
 protected:
 	SimpleMesh m_mesh;
 	ImplicitFunction * m_pFunction;
