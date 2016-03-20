@@ -25,14 +25,16 @@ public:
 	const glm::vec3 & F(int i) const { return m_F[i]; }
 	float M(int i) const { return m_M[i]; }
 	float time(int i) const { return timeToLive[i]; }
-
+	//const bool & contactedNozzle(int i) const { return contactNozzle[i]; }
 	glm::vec3 & X(int i) { return m_X[i]; }
 	glm::vec3 & V(int i) { return m_V[i]; }
 	glm::vec3 & A(int i) { return m_A[i]; }
 	glm::vec3 & F(int i) { return m_F[i]; }
 	float & M(int i) { return m_M[i]; }
 	float & time(int i) { return timeToLive[i]; }
-	/*void DrawParticles();*/
+	//bool & contactedNozzle(int i) { return contactNozzle[i]; }
+	std::vector<bool> contactNozzle;
+	std::vector<bool> contactSecondTeir;
 
 protected:
 	std::vector<glm::vec3> m_X;		// position
@@ -41,6 +43,7 @@ protected:
 	std::vector<glm::vec3> m_F;		// force
 	std::vector<float> m_M;			// mass
 	std::vector<float> timeToLive;
+	
 };
 
 

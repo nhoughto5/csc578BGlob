@@ -54,7 +54,7 @@ bool ImplicitPolygonizer::Initialize()
 	}
 	int value = 10;
 	aabb bounds(-value, -value, -value, value, value, value);
-	int grid_resolution = 100;
+	int grid_resolution = 150;
 
 	m_pPolygonizer = MakePolygonizer(this, &bounds, grid_resolution, 10);
 	if (!m_pPolygonizer)

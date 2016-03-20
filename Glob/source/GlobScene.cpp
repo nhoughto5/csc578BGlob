@@ -7,7 +7,7 @@
 
 float g_distance = 1;
 float g_boundsRadius = 5;
-GLuint planeSize = 20;
+GLuint planeSize = 8;
 GlobScene::GlobScene() :
 	mIsPlaying(false),
 	splineStart(false),
