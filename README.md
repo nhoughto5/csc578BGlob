@@ -1,6 +1,7 @@
 # Globular Physics Simulator
 The globular physics simulator is my submission for the final project of Dr. Wyvill's CSC 578B. Its purpose is to simulate the behaviour of viscous fluid spouting from a fountain. The system uses an implicit mesher developed at the University of Toronto and can be found [here](http://www.dgp.toronto.edu/~rms/software/ImplicitMesher/index.html)
 
+A full speed demo can be seen [here](https://youtu.be/NTm2uciIXeA) and a slow motion version [here](https://youtu.be/8yMykBon_8I)
 ## Design
 The simulator begins by reading and loading a mesh of a water fountain from an .Obj file. The fountain data is stored in a Mesh object defined in the class of the same name.
 This object and a horizontal plane are handled by the "Structure" class. The simulator then creates a vector of point particles which are managed by the "ParticleSet" class.

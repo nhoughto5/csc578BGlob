@@ -15,7 +15,7 @@ Glob::Glob(GLuint planeSize_) :
 	planeSize(planeSize_)
 	{
 	int start = 4, height = 4.0f;
-	g_blobs.AddBlobs(25, fountainSpout, radius);
+	g_blobs.AddBlobs(15, fountainSpout, radius);
 	g_simulator.SetParticles(&g_blobs, liveTime);
 	g_polygonizer.SetFunction(&g_blobs);
 	g_polygonizer.Initialize();

@@ -81,21 +81,6 @@ void GlobScene::keyPressEvent(int key, int scancode, int action, int mods) {
 		case GLFW_KEY_E:
 			mCamera.input(LOOKRIGHT);
 			break;
-		case GLFW_KEY_V:
-			mCamera.setLookat(ballPosition);
-			break;
-		case GLFW_KEY_U:
-			mSplineManager.showSpline();
-			break;
-		case GLFW_KEY_I:
-			mSplineManager.showControlPoints();
-			break;
-		case GLFW_KEY_O:
-			mSplineManager.showCage();
-			break;
-		case GLFW_KEY_P:
-			mSplineManager.showSplinePoints();
-			break;
 		case GLFW_KEY_ENTER:
 			mIsPlaying = !mIsPlaying;
 			break;

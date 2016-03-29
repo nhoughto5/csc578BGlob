@@ -170,9 +170,9 @@ glm::vec3 OriginSpringSimulator::interGlobularForce(int current) {
 //Compute total force on each particle
 void OriginSpringSimulator::ComputeForces(float dt)
 {
-	glm::vec3 gravity{ 0.0f, -9.8, 0.0f }, ground{ 0.0f, 0.0f, 0.0f };
+	glm::vec3 gravity{ 0.0f, -0.1f, 0.0f }, ground{ 0.0f, 0.0f, 0.0f };
 	float restitution = 0.4f;
-	float damping = 0.250f;
+	float damping = 0.450f;
 	unsigned int N = m_pParticles->N(); //Number of Particles
 	glm::vec3 interForce;
 	for ( unsigned int i = 0; i < N; ++i ) {
@@ -191,7 +191,7 @@ void OriginSpringSimulator::ComputeForces(float dt)
 			resetParticle(i);
 		}
 		//Contacts Fountain Nozzle
-		float fountainNozzleRadius = 0.5f;
+		float fountainNozzleRadius = 0.75f;
 		float xzSquared = (m_pParticles->X(i).x * m_pParticles->X(i).x) + (m_pParticles->X(i).y * m_pParticles->X(i).y);
 		if ((m_pParticles->contactNozzle[i] == false) && (m_pParticles->X(i).y <= 0.99f * fountainHead.y) && (xzSquared < (fountainNozzleRadius * fountainNozzleRadius))) {
 			m_pParticles->contactNozzle[i] = true;
@@ -201,7 +201,7 @@ void OriginSpringSimulator::ComputeForces(float dt)
 		}
 
 		//Contacts Second Teir
-		float secondTeirRadius = 4.0f;
+		float secondTeirRadius = 1.5f;
 		xzSquared = (m_pParticles->X(i).x * m_pParticles->X(i).x) + (m_pParticles->X(i).y * m_pParticles->X(i).y);
 		if ((m_pParticles->contactSecondTeir[i] == false) && (m_pParticles->X(i).y <= 0.55f * fountainHead.y) && (xzSquared < (secondTeirRadius * secondTeirRadius))) {
 			m_pParticles->contactSecondTeir[i] = true;
@@ -211,7 +211,7 @@ void OriginSpringSimulator::ComputeForces(float dt)
 		}
 		
 		//Contacts Fountain Base
-		float baseRadius = 6.0f;
+		float baseRadius = 3.0f;
 		xzSquared = (m_pParticles->X(i).x * m_pParticles->X(i).x) + (m_pParticles->X(i).y * m_pParticles->X(i).y);
 		if ((m_pParticles->contactedBase[i] == false) && (m_pParticles->X(i).y <= 0.1f * fountainHead.y) && (xzSquared < (baseRadius * baseRadius))) {
 			m_pParticles->contactedBase[i] = true;

@@ -55,8 +55,8 @@ public:
 	virtual void SetParticlePosition( int i, const glm::vec3 & vPosition) { m_vBlobs[i].Position() = vPosition; }
 
 	virtual glm::vec3 newFountainVelocity() {
-		float upperLimitY = 12.5f, lowerLimitY = 1.0f;
-		float upperLimitXZ = 1.1f;
+		float upperLimitY = 1.5f, lowerLimitY = 1.0f;
+		float upperLimitXZ = 0.15f;
 		//glm::vec3 test{ 0.0f, 6.0f, 7.0f };
 		glm::vec3 vel;
 		vel.x = (-upperLimitXZ) + (float)(rand()) / ((float)(RAND_MAX / (upperLimitXZ - (-upperLimitXZ))));
