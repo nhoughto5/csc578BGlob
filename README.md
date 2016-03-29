@@ -11,15 +11,16 @@ The implicit mesher system computes and draws a spherical glob around each parti
 as a single mesh. If two globules come within a specified distance of one another the system computes and draws an amalgamated mesh to simulate the joining of two viscous fluid droplets.
 
 ## Controls
-W - Step Forward  
-S - Step Backward  
-A - Step Left  
-D - Step Right  
-R - Step Up  
-F - Step Down  
-Q - Step Tilt Left  
-E - Step Tile Right  
+W - Move Forward  
+S - Move Backward  
+A - Move Left  
+D - Move Right  
+R - Move Up  
+F - Move Down  
+Q - Move Tilt Left  
+E - Move Tile Right  
 Enter - Toggle Globular Simulation On/Off  
 Spacebar - Step Globular Simulation  
 CapsLock - Toggle Camera follow spline path  
 Backspace - Reset Particles  
+Mouse - Look At
