@@ -15,9 +15,7 @@ Glob::Glob(GLuint planeSize_) :
 	planeSize(planeSize_)
 	{
 	int start = 4, height = 4.0f;
-
-	//g_blobs.AddBlob(Blob(fountainSpout, radius));
-	g_blobs.AddBlobs(3, fountainSpout, radius);
+	g_blobs.AddBlobs(25, fountainSpout, radius);
 	g_simulator.SetParticles(&g_blobs, liveTime);
 	g_polygonizer.SetFunction(&g_blobs);
 	g_polygonizer.Initialize();
@@ -67,10 +65,7 @@ void Glob::renderGeometry(atlas::math::Matrix4 projection, atlas::math::Matrix4 
 		verticesBuffer = temp;
 		getIndices();
 	}
-	else {
-		std::cout << "Boo Bitch\n";
-	}
-	mModel = glm::translate(Matrix4(1.0f), glm::vec3{ 0.0f,0.0f, 0.0f });
+	mModel = glm::translate(Matrix4(1.0f), glm::vec3{ 0.0f,1.0f, 0.0f });
 	glBindBuffer(GL_ARRAY_BUFFER, verticesBufferId);
 	glBufferData(GL_ARRAY_BUFFER, verticesBuffer.size() * sizeof(glm::vec3), &verticesBuffer[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, globIndiciesBuffer);
@@ -103,4 +98,7 @@ void Glob::setAmbientLight(glm::vec4 aL) {
 }
 void Glob::setEyePosition(glm::vec3 eye) {
 	eyePosition = eye;
+}
+void Glob::resetParticles() {
+	g_simulator.setForReset();
 }

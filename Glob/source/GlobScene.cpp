@@ -19,7 +19,7 @@ GlobScene::GlobScene() :
 	mSplineManager(int(mAnimLength * mFPS)),
 	ballPosition{ 4.0f, 0.0f, 4.0f },
 	mCamera(),
-	lightPosition{ 14.0f,5.0f, 0.0f },
+	lightPosition{ 4.0f,9.0f, 0.0f },
 	ambientLight{ 0.6f, 0.6f, 0.6f, 1.0f },
 	mStructure(planeSize),
 	mGlob(planeSize)
@@ -33,6 +33,7 @@ GlobScene::GlobScene() :
 }
 
 GlobScene::~GlobScene() {
+
 }
 //UNUSED
 void GlobScene::mousePressEvent(int button, int action, int modifiers, double xPos, double yPos) {
@@ -115,6 +116,8 @@ void GlobScene::keyPressEvent(int key, int scancode, int action, int mods) {
 			break;
 		case GLFW_KEY_SPACE:
 			mGlob.RunSimulationStep();
+		case GLFW_KEY_BACKSPACE:
+			mGlob.resetParticles();
 		default:
 			break;
 		}

@@ -23,7 +23,7 @@ void ParticleSet::InitializeParticles(float liveTime)
 	timeToLive.resize(nCount);
 	contactNozzle.resize(nCount);
 	contactSecondTeir.resize(nCount);
-
+	contactedBase.resize(nCount);
 	for ( unsigned int k = 0; k < nCount; ++k ) {
 		m_X[k] = GetParticlePosition(k);
 		//m_V[k] = glm::vec3(0, 0, 0);
@@ -35,6 +35,7 @@ void ParticleSet::InitializeParticles(float liveTime)
 		timeToLive[k] = (0.25f* liveTime) + (float)(rand()) / ((float)(RAND_MAX / (liveTime - (0.25f* liveTime))));
 		contactNozzle[k] = false;
 		contactSecondTeir[k] = false;
+		contactedBase[k] = false;
 	}
 }
 
@@ -60,11 +61,20 @@ void Simulator::SetParticles(ParticleSet * pParticles, float liveTime)
 	InitializeSimulator();
 }
 
-
+void Simulator::setForReset() {
+	isReset = true;
+}
 void Simulator::StepSimulation(float dt)
 {
-	ComputeForces(dt);
 
+	
+	if (isReset) {
+		isReset = false;
+		resetAllParticles();
+	}
+	else {
+		ComputeForces(dt);
+	}
 	unsigned int N = m_pParticles->N();
 
 	for ( unsigned int i = 0; i < N; ++i )
@@ -89,16 +99,9 @@ OriginSpringSimulator::OriginSpringSimulator(float fK, float fB, float radius_, 
 
 void OriginSpringSimulator::InitializeSimulator()
 {
-	//Set the rest position between all blobs
-	unsigned int N = m_pParticles->N();
-	m_vRestPos.resize(N);
-	for ( unsigned int i = 0; i < N; ++i ) {
-		/*m_vRestPos[i] = 0.5f * m_pParticles->X(i);*/
-		m_vRestPos[i].x = 0.5f * m_pParticles->X(i).x;
-		m_vRestPos[i].y = m_pParticles->X(i).y;
-		m_vRestPos[i].z = 0.5f * m_pParticles->X(i).z;
-	}
+	isReset = false;
 }
+//Reset particle i to origin position and assign a new velocity
 void OriginSpringSimulator::resetParticle(int i) {
 	glm::vec3 tempVel = m_pParticles->newFountainVelocity();
 	m_pParticles->X(i).x = fountainHead.x;
@@ -110,17 +113,31 @@ void OriginSpringSimulator::resetParticle(int i) {
 	m_pParticles->F(i).x = 0.0f;
 	m_pParticles->F(i).y = 0.0f;
 	m_pParticles->F(i).z = 0.0f;
+	m_pParticles->A(i).x = 0.0f;
+	m_pParticles->A(i).y = 0.0f;
+	m_pParticles->A(i).z = 0.0f;
 	m_pParticles->time(i) = (0.25f* timeToLive) + (float)(rand()) / ((float)(RAND_MAX / (timeToLive - (0.25f* timeToLive))));
 	m_pParticles->contactNozzle[i] = false;
 	m_pParticles->contactSecondTeir[i] = false;
+	m_pParticles->contactedBase[i] = false;
 }
+void OriginSpringSimulator::resetAllParticles() {
+	int N = m_pParticles->ParticleCount();
+	for (int i = 0; i < N; ++i) {
+		resetParticle(i);
+	}
+}
+//Compute the forces acting on the current particle caused
+//By each other particle in the system
 glm::vec3 OriginSpringSimulator::interGlobularForce(int current) {
 	glm::vec3 force{ 0.0f, 0.0f, 0.0f };
 	glm::vec3 currentPosition = m_pParticles->GetParticlePosition(current);
 	glm::vec3 currentVelocity = m_pParticles->V(current);
 	glm::vec3 P, V;
-	int m = 5, n = 3;
-	float Cr, Cd, b1 = 0.00000010f, b2;
+	int m = 1, n = 3;
+	float Cr, Cd, b2;
+	//float b1 = 0.000000010f;
+	float b1 = 0.01f;
 	float rMax = radius;
 	float ri, rp, r0 = 0.8 * radius;
 	Cr = r0; Cd = r0;
@@ -128,14 +145,16 @@ glm::vec3 OriginSpringSimulator::interGlobularForce(int current) {
 	float D, dM, dN;
 	float Sr, Sd;
 	for (int i = 0; i < m_pParticles->ParticleCount(); ++i) {
+		//Current Particle does not cause interglobular force on its self
 		if (i != current) {
 			D = glm::distance(currentPosition, m_pParticles->GetParticlePosition(i));
-			if (D >= 0.01) {
+			//Prevent explosive force if two particles extremely close
+			if (D >= 0.001) {
 				P = currentPosition - m_pParticles->GetParticlePosition(i);
-				V = m_pParticles->V(i);
+				V = currentVelocity - m_pParticles->V(i);
 				if ((D*D) < (Cr*Cr*(ri + rp)*(ri + rp))) {
-					Sr = 1.0f - (D * D) / ((Cr)*(Cr)*(ri + rp)*(ri + rp));
-					Sr = 200.0f * Sr;
+					Sr = 1.0f - (D * D) / ((Cr)*(Cr)*(ri + rp)*(ri + rp)) + 4;
+					//Sr = Sr;
 				}
 				else Sr = 0.0f;
 				if ((D*D) < (Cd*Cd*(ri + rp)*(ri + rp))) {
@@ -143,7 +162,8 @@ glm::vec3 OriginSpringSimulator::interGlobularForce(int current) {
 				}
 				else Sd = 0.0f;
 				b2 = b1 * glm::pow(r0, (n - m));
-				dM = (Sr * ((b1 / glm::pow(D, m)) - (b2 / glm::pow(D, n))) - Sd*((glm::dot(V, P)) / (D*D)));
+				//dM = (Sr * ((b1 / glm::pow(D, m)) - (b2 / glm::pow(D, n))) - Sd*((glm::dot(V, P)) / (D*D)));
+				dM = Sr * ((b1 / glm::pow(D, m)));
 				force += P * dM;
 			}
 		}
@@ -153,50 +173,54 @@ glm::vec3 OriginSpringSimulator::interGlobularForce(int current) {
 //int count;
 void OriginSpringSimulator::ComputeForces(float dt)
 {
-	//std::cout << "    ComputeForces: " << count++ << "\n";
-	glm::vec3 gravity{ 0.0f, -0.5, 0.0f }, ground{ 0.0f, 0.0f, 0.0f };
+	glm::vec3 gravity{ 0.0f, -9.8, 0.0f }, ground{ 0.0f, 0.0f, 0.0f };
 	float restitution = 0.4f;
-	float damping = 0.50f;
+	float damping = 0.250f;
 	unsigned int N = m_pParticles->N(); //Number of Particles
 	glm::vec3 interForce;
-	std::cout << "Globular Force ";
 	for ( unsigned int i = 0; i < N; ++i ) {
-		//m_pParticles->F(i) =   m_pParticles->M(i) * gravity - m_pParticles->V(i) * damping; //Falling
+
 		interForce = interGlobularForce(i);
-		std::cout << i << ": " << interForce.x << ", " << interForce.y << ", " << interForce.z << "  ";
 		m_pParticles->F(i) = interForce + (m_pParticles->M(i) * gravity) - (m_pParticles->V(i) * damping);
 		m_pParticles->A(i) = m_pParticles->F(i) / m_pParticles->M(i);
 
 		//Hit Ground
 		float closeToGround = 0.515f;
-		if ((m_pParticles->GetParticlePosition(i).y - ground.y) <= closeToGround && ((m_pParticles->GetParticlePosition(i).x <= (float)planeSize - 1.0f)&&(m_pParticles->GetParticlePosition(i).z <= (float)planeSize -1.0f))) {
+		if ((m_pParticles->GetParticlePosition(i).y - ground.y) <= closeToGround && ((glm::abs(m_pParticles->GetParticlePosition(i).x) <= (float)planeSize - 1.0f)&&(glm::abs(m_pParticles->GetParticlePosition(i).z) <= (float)planeSize - 1.0f))) {
 			m_pParticles->V(i).y = 0.0f;
 		}
 		m_pParticles->time(i) -= dt;
 		if (m_pParticles->X(i).y <= bottom || m_pParticles->time(i) <= 0.0f || m_pParticles->X(i).y > 12.0f) {
 			resetParticle(i);
 		}
-		float upperLimit = 0.5f, lowerLimit = 0.3f;
 		//Contacts Fountain Nozzle
-		float fountainNozzleWidth = 0.1f;
-		if ((m_pParticles->contactNozzle[i] == false) && (m_pParticles->X(i).y <= 0.99f * fountainHead.y) && ((m_pParticles->X(i).x < fountainNozzleWidth) && (m_pParticles->X(i).z < fountainNozzleWidth))) {
+		float fountainNozzleRadius = 0.5f;
+		float xzSquared = (m_pParticles->X(i).x * m_pParticles->X(i).x) + (m_pParticles->X(i).y * m_pParticles->X(i).y);
+		if ((m_pParticles->contactNozzle[i] == false) && (m_pParticles->X(i).y <= 0.99f * fountainHead.y) && (xzSquared < (fountainNozzleRadius * fountainNozzleRadius))) {
 			m_pParticles->contactNozzle[i] = true;
 			m_pParticles->V(i).y = - restitution * m_pParticles->V(i).y;
-			m_pParticles->V(i).x = (-upperLimit) + (float)(rand()) / ((float)(RAND_MAX / (upperLimit - (-upperLimit))));
-			m_pParticles->V(i).z = (-upperLimit) + (float)(rand()) / ((float)(RAND_MAX / (upperLimit - (-upperLimit))));
+			m_pParticles->V(i).x = restitution * m_pParticles->V(i).x;
+			m_pParticles->V(i).z = restitution * m_pParticles->V(i).z;
 		}
 
 		//Contacts Second Teir
-		float secondTeirWidth = 13.0f;
-		upperLimit = 1.5f; lowerLimit = 0.3f;
-		if ((m_pParticles->contactSecondTeir[i] == false) && (m_pParticles->X(i).y <= 0.55f * fountainHead.y) && (((m_pParticles->X(i).x < secondTeirWidth) && (m_pParticles->X(i).z < secondTeirWidth)))) {
+		float secondTeirRadius = 4.0f;
+		xzSquared = (m_pParticles->X(i).x * m_pParticles->X(i).x) + (m_pParticles->X(i).y * m_pParticles->X(i).y);
+		if ((m_pParticles->contactSecondTeir[i] == false) && (m_pParticles->X(i).y <= 0.55f * fountainHead.y) && (xzSquared < (secondTeirRadius * secondTeirRadius))) {
 			m_pParticles->contactSecondTeir[i] = true;
 			m_pParticles->V(i).y = - restitution * m_pParticles->V(i).y;
-		/*	m_pParticles->V(i).y = 0.0f;*/
-			m_pParticles->V(i).x = (m_pParticles->V(i).x / glm::abs(m_pParticles->V(i).x))*((-upperLimit) + (float)(rand()) / ((float)(RAND_MAX / (upperLimit - (-upperLimit)))));
-			m_pParticles->V(i).z = (m_pParticles->V(i).z / glm::abs(m_pParticles->V(i).z))*((-upperLimit) + (float)(rand()) / ((float)(RAND_MAX / (upperLimit - (-upperLimit)))));
+			m_pParticles->V(i).x = restitution * m_pParticles->V(i).x;
+			m_pParticles->V(i).z = restitution * m_pParticles->V(i).z;
 		}
 		
+		//Contacts Fountain Base
+		float baseRadius = 6.0f;
+		xzSquared = (m_pParticles->X(i).x * m_pParticles->X(i).x) + (m_pParticles->X(i).y * m_pParticles->X(i).y);
+		if ((m_pParticles->contactedBase[i] == false) && (m_pParticles->X(i).y <= 0.1f * fountainHead.y) && (xzSquared < (baseRadius * baseRadius))) {
+			m_pParticles->contactedBase[i] = true;
+			m_pParticles->V(i).y = -restitution * m_pParticles->V(i).y;
+			m_pParticles->V(i).x = restitution * m_pParticles->V(i).x;
+			m_pParticles->V(i).z = restitution * m_pParticles->V(i).z;
+		}
 	}
-	std::cout << "\n";
 }

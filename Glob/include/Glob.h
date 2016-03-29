@@ -15,6 +15,7 @@ public:
 	void setLightPosition(glm::vec3 LP);
 	void setAmbientLight(glm::vec4 aL);
 	void setEyePosition(glm::vec3 eye);
+	void resetParticles();
 private:
 	GLuint verticesBufferId, mVao, globIndiciesBuffer, planeSize;
 	BlobSet g_blobs;

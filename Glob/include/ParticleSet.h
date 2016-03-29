@@ -35,6 +35,7 @@ public:
 	//bool & contactedNozzle(int i) { return contactNozzle[i]; }
 	std::vector<bool> contactNozzle;
 	std::vector<bool> contactSecondTeir;
+	std::vector<bool> contactedBase;
 
 protected:
 	std::vector<glm::vec3> m_X;		// position
@@ -60,8 +61,11 @@ public:
 	virtual void ComputeForces(float dt) = 0;
 	virtual glm::vec3 interGlobularForce(int i) = 0;
 	virtual void resetParticle(int i) = 0;
+	virtual void resetAllParticles() = 0;
+	void setForReset();
 protected:
 	ParticleSet * m_pParticles;
+	bool isReset;
 };
 
 
@@ -75,6 +79,7 @@ public:
 	virtual void ComputeForces(float dt);
 	virtual glm::vec3 interGlobularForce(int i);
 	virtual void resetParticle(int i);
+	virtual void resetAllParticles();
 protected:
 	std::vector<glm::vec3> m_vRestPos;
 	float m_fK;		// spring stiffness
@@ -84,4 +89,5 @@ protected:
 	float bottom;
 	glm::vec3 fountainHead;
 	float timeToLive;
+	
 };

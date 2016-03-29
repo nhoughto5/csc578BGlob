@@ -55,12 +55,13 @@ public:
 	virtual void SetParticlePosition( int i, const glm::vec3 & vPosition) { m_vBlobs[i].Position() = vPosition; }
 
 	virtual glm::vec3 newFountainVelocity() {
-		float upperLimit = 2.5f, lowerLimit = 1.0f;
-		glm::vec3 test{ 0.0f, 6.0f, 7.0f };
+		float upperLimitY = 12.5f, lowerLimitY = 1.0f;
+		float upperLimitXZ = 1.1f;
+		//glm::vec3 test{ 0.0f, 6.0f, 7.0f };
 		glm::vec3 vel;
-		vel.x = 0.0f;// (-upperLimit) + (float)(rand()) / ((float)(RAND_MAX / (upperLimit - (-upperLimit))));
-		vel.y = lowerLimit + (float) (rand()) / ((float) (RAND_MAX / (upperLimit - lowerLimit)));
-		vel.z = 0.0f;//(-upperLimit) + (float)(rand()) / ((float)(RAND_MAX / (upperLimit - (-upperLimit))));;
+		vel.x = (-upperLimitXZ) + (float)(rand()) / ((float)(RAND_MAX / (upperLimitXZ - (-upperLimitXZ))));
+		vel.y = lowerLimitY + (float) (rand()) / ((float) (RAND_MAX / (upperLimitY - lowerLimitY)));
+		vel.z = (-upperLimitXZ) + (float)(rand()) / ((float)(RAND_MAX / (upperLimitXZ - (-upperLimitXZ))));;
 		return vel;
 	}
 protected:

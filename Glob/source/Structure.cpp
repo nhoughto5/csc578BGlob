@@ -77,7 +77,7 @@ Structure::~Structure() {
 void Structure::renderGeometry(atlas::math::Matrix4 projection, atlas::math::Matrix4 view) {
 
 	mShaders[0]->enableShaders();
-	mModel = glm::translate(Matrix4(1.0f), glm::vec3{ 0.0f,0.0f, 0.0f });
+	mModel = glm::translate(Matrix4(1.0f), glm::vec3{ 0.0f,0.5f, 0.0f });
 	auto mvpMat = projection * view * mModel;
 	glUniformMatrix4fv(mUniforms["mvpMat"], 1, GL_FALSE, &mvpMat[0][0]);
 	glUniform3fv(mUniforms["lightPositionWorld"], 1, &lightPosition[0]);
@@ -88,6 +88,9 @@ void Structure::renderGeometry(atlas::math::Matrix4 projection, atlas::math::Mat
 	glBindVertexArray(mVao);
 	glDrawElements(GL_TRIANGLES, planeNumIndices, GL_UNSIGNED_SHORT, nullptr);
 	glBindVertexArray(fountainArrayObject);
+	mModel = glm::translate(Matrix4(1.0f), glm::vec3{ 0.0f,0.8f, 0.0f });
+	mvpMat = projection * view * mModel;
+	glUniformMatrix4fv(mUniforms["mvpMat"], 1, GL_FALSE, &mvpMat[0][0]);
 	glUniform1f(mUniforms["specularStrength"], fountainReflection);
 	glDrawElements(GL_TRIANGLES, fountainNumberOfIndicies, GL_UNSIGNED_SHORT, nullptr);
 	mShaders[0]->disableShaders();
