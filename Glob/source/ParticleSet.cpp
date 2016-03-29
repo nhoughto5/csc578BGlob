@@ -1,7 +1,6 @@
 #include "ParticleSet.h"
 #include <iostream>
 #include <glm\glm.hpp>
-//#include <GL/freeglut.h>
 
 ParticleSet::ParticleSet(void)
 {
@@ -26,7 +25,6 @@ void ParticleSet::InitializeParticles(float liveTime)
 	contactedBase.resize(nCount);
 	for ( unsigned int k = 0; k < nCount; ++k ) {
 		m_X[k] = GetParticlePosition(k);
-		//m_V[k] = glm::vec3(0, 0, 0);
 		m_V[k] = newFountainVelocity();
 		m_A[k] = glm::vec3(0,0,0);
 		m_F[k] = glm::vec3(0,0,0);
@@ -60,16 +58,18 @@ void Simulator::SetParticles(ParticleSet * pParticles, float liveTime)
 	m_pParticles->InitializeParticles(liveTime);
 	InitializeSimulator();
 }
-
+//User Pressed "Backspace"
 void Simulator::setForReset() {
 	isReset = true;
 }
 void Simulator::StepSimulation(float dt)
 {
+	//If user has pressed "Backspace", reset all particles to fountain nozzle
 	if (isReset) {
 		isReset = false;
 		resetAllParticles();
 	}
+	//Else step simulation
 	else {
 		ComputeForces(dt);
 		unsigned int N = m_pParticles->N();
@@ -134,7 +134,6 @@ glm::vec3 OriginSpringSimulator::interGlobularForce(int current) {
 	glm::vec3 P, V;
 	int m = 1, n = 3;
 	float Cr, Cd, b2;
-	//float b1 = 0.000000010f;
 	float b1 = 0.01f;
 	float rMax = radius;
 	float ri, rp, r0 = 0.8 * radius;
@@ -152,7 +151,6 @@ glm::vec3 OriginSpringSimulator::interGlobularForce(int current) {
 				V = currentVelocity - m_pParticles->V(i);
 				if ((D*D) < (Cr*Cr*(ri + rp)*(ri + rp))) {
 					Sr = 1.0f - (D * D) / ((Cr)*(Cr)*(ri + rp)*(ri + rp)) + 4;
-					//Sr = Sr;
 				}
 				else Sr = 0.0f;
 				if ((D*D) < (Cd*Cd*(ri + rp)*(ri + rp))) {
@@ -168,7 +166,8 @@ glm::vec3 OriginSpringSimulator::interGlobularForce(int current) {
 	}
 	return force;
 }
-//int count;
+
+//Compute total force on each particle
 void OriginSpringSimulator::ComputeForces(float dt)
 {
 	glm::vec3 gravity{ 0.0f, -9.8, 0.0f }, ground{ 0.0f, 0.0f, 0.0f };
@@ -196,7 +195,7 @@ void OriginSpringSimulator::ComputeForces(float dt)
 		float xzSquared = (m_pParticles->X(i).x * m_pParticles->X(i).x) + (m_pParticles->X(i).y * m_pParticles->X(i).y);
 		if ((m_pParticles->contactNozzle[i] == false) && (m_pParticles->X(i).y <= 0.99f * fountainHead.y) && (xzSquared < (fountainNozzleRadius * fountainNozzleRadius))) {
 			m_pParticles->contactNozzle[i] = true;
-			m_pParticles->V(i).y = - restitution * m_pParticles->V(i).y;
+			m_pParticles->V(i).y = - restitution * m_pParticles->V(i).y; //Bounce
 			m_pParticles->V(i).x = restitution * m_pParticles->V(i).x;
 			m_pParticles->V(i).z = restitution * m_pParticles->V(i).z;
 		}
@@ -206,7 +205,7 @@ void OriginSpringSimulator::ComputeForces(float dt)
 		xzSquared = (m_pParticles->X(i).x * m_pParticles->X(i).x) + (m_pParticles->X(i).y * m_pParticles->X(i).y);
 		if ((m_pParticles->contactSecondTeir[i] == false) && (m_pParticles->X(i).y <= 0.55f * fountainHead.y) && (xzSquared < (secondTeirRadius * secondTeirRadius))) {
 			m_pParticles->contactSecondTeir[i] = true;
-			m_pParticles->V(i).y = - restitution * m_pParticles->V(i).y;
+			m_pParticles->V(i).y = - restitution * m_pParticles->V(i).y; //Bounce
 			m_pParticles->V(i).x = restitution * m_pParticles->V(i).x;
 			m_pParticles->V(i).z = restitution * m_pParticles->V(i).z;
 		}
@@ -216,7 +215,7 @@ void OriginSpringSimulator::ComputeForces(float dt)
 		xzSquared = (m_pParticles->X(i).x * m_pParticles->X(i).x) + (m_pParticles->X(i).y * m_pParticles->X(i).y);
 		if ((m_pParticles->contactedBase[i] == false) && (m_pParticles->X(i).y <= 0.1f * fountainHead.y) && (xzSquared < (baseRadius * baseRadius))) {
 			m_pParticles->contactedBase[i] = true;
-			m_pParticles->V(i).y = -restitution * m_pParticles->V(i).y;
+			m_pParticles->V(i).y = -restitution * m_pParticles->V(i).y; //Bounce
 			m_pParticles->V(i).x = restitution * m_pParticles->V(i).x;
 			m_pParticles->V(i).z = restitution * m_pParticles->V(i).z;
 		}

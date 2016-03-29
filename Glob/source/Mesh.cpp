@@ -5,7 +5,6 @@
 #include <iostream>
 Mesh::Mesh()
 {
-	//ctor
 }
 Mesh::~Mesh()
 {
@@ -47,6 +46,8 @@ face Mesh::getFace(std::string line) {
 	}
 	return f;
 }
+
+//Read model into simulation from .obj file and store as a Mesh Object
 void Mesh::LoadObjModel(const char *filename)
 {
 	face f;

@@ -81,21 +81,6 @@ void GlobScene::keyPressEvent(int key, int scancode, int action, int mods) {
 		case GLFW_KEY_E:
 			mCamera.input(LOOKRIGHT);
 			break;
-		case GLFW_KEY_UP:
-			mCamera.input(TILTDOWN);
-			break;
-		case GLFW_KEY_DOWN:
-			mCamera.input(TILTUP);
-			break;
-		case GLFW_KEY_LEFT:
-			mCamera.input(LOOKLEFT);
-			break;
-		case GLFW_KEY_RIGHT:
-			mCamera.input(LOOKRIGHT);
-			break;
-		case GLFW_KEY_C:
-			mCamera.setPosition(glm::vec3(0.0f, 3.0f, 0.0f));
-			break;
 		case GLFW_KEY_V:
 			mCamera.setLookat(ballPosition);
 			break;
@@ -114,10 +99,15 @@ void GlobScene::keyPressEvent(int key, int scancode, int action, int mods) {
 		case GLFW_KEY_ENTER:
 			mIsPlaying = !mIsPlaying;
 			break;
+		case GLFW_KEY_CAPS_LOCK:
+			splineStart = !splineStart;
+			break;
 		case GLFW_KEY_SPACE:
 			mGlob.RunSimulationStep();
+			break;
 		case GLFW_KEY_BACKSPACE:
 			mGlob.resetParticles();
+			break;
 		default:
 			break;
 		}
@@ -137,7 +127,7 @@ void GlobScene::renderScene() {
 
 	mView = mCamera.getCameraMatrix();
 	mGrid.renderGeometry(mProjection, mView);
-	//mSplineManager.renderGeometry(mProjection, mView);
+	mSplineManager.renderGeometry(mProjection, mView);
 	mGlob.setEyePosition(mCamera.getPosition());
 	mGlob.renderGeometry(mProjection, mView);
 	mStructure.setEyePosition(mCamera.getPosition());

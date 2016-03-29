@@ -1,3 +1,4 @@
+//The Structure class is used to draw the plane and the fountain
 #ifndef STRUCTURE_H
 #define STRUCTURE_H
 #pragma once

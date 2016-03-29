@@ -1,16 +1,25 @@
-# UVic Animation Lab (CSc 473/578B)
-This is where you will find all the code for the labs as well as the assignment descriptions.
+# Globular Physics Simulator
+The globular physics simulator is my submission for the final project of Dr. Wyvill's CSC 578B. Its purpose is to simulate the behaviour of viscous fluid spouting from a fountain. The system uses an implicit mesher developed at the University of Toronto and can be found *[here](http://www.dgp.toronto.edu/~rms/software/ImplicitMesher/index.html)
 
-## Compile Instructions
-The lab(ECS 354) is already fully capable of running Atlas (the framework we will be using) as well as the labs themselves. Through Atlas, Windows and Linux are also supported. You can see the compilation instructions here:
+## Design
+The simulator begins by reading and loading a mesh of a water fountain from an .Obj file. The fountain data is stored in a Mesh object defined in the class of the same name.
+This object and a horizontal plane are handled by the "Structure" class. The simulator then creates a vector of point particles which are managed by the "ParticleSet" class.
+The "ParticleSet" object maintains position, velocity and forces acting on each of the particles. At every step of the simulation interglobular forces are computed according to the
+according to "Globular Dynamics: A Connected Particle System for Animating Viscous Fluids" by Gavin Miller and Andrew Pearce which can be found *[here](http://www.sciencedirect.com/science/article/pii/0097849389900782).
 
-* [Windows](https://github.com/marovira/uvic-animation/wiki/Compiling-in-Windows)
-* [Linux](https://github.com/marovira/uvic-animation/wiki/Compiling-in-Linux)
-* [OSX](https://github.com/marovira/uvic-animation/wiki/Compiling-in-OSX)
+The implicit mesher system computes and draws a spherical glob around each particle in the simulation. All of the seperate meshes neeed to draw each glob are treated
+as a single mesh. If two globules come within a specified distance of one another the system computes and draws an amalgamated mesh to simulate the joining of two viscous fluid droplets.
 
-## Problems? Bugs? Suggestions?
-Please identify where your problem/bug/suggestion is coming from. Since Atlas is maintained in a separate repo from the animation labs, it is important to know where you should open an issue to ensure it is resolved correctly.
-
-Basically, the logic goes like this:
-* If the issue is with Atlas, then open an issue [here](https://github.com/marovira/atlas/issues).
-* Otherwise, you can do it [here](https://github.com/marovira/uvic-animation/issues).
+## Controls
+W - Step Forward
+S - Step Backward
+A - Step Left
+D - Step Right
+R - Step Up
+F - Step Down
+Q - Step Tilt Left
+E - Step Tile Right
+Enter - Toggle Globular Simulation On/Off
+Spacebar - Step Globular Simulation
+CapsLock - Toggle Camera follow spline path
+Backspace - Reset Particles
