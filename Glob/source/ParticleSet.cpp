@@ -66,23 +66,21 @@ void Simulator::setForReset() {
 }
 void Simulator::StepSimulation(float dt)
 {
-
-	
 	if (isReset) {
 		isReset = false;
 		resetAllParticles();
 	}
 	else {
 		ComputeForces(dt);
-	}
-	unsigned int N = m_pParticles->N();
+		unsigned int N = m_pParticles->N();
 
-	for ( unsigned int i = 0; i < N; ++i )
-		m_pParticles->X(i) = m_pParticles->X(i) + m_pParticles->V(i)*dt;
+		for (unsigned int i = 0; i < N; ++i)
+			m_pParticles->X(i) = m_pParticles->X(i) + m_pParticles->V(i)*dt;
 
-	for ( unsigned int i = 0; i < N; ++i ) {
-		m_pParticles->A(i) = m_pParticles->F(i) / m_pParticles->M(i);
-		m_pParticles->V(i) = m_pParticles->V(i) + m_pParticles->A(i)*dt;
+		for (unsigned int i = 0; i < N; ++i) {
+			m_pParticles->A(i) = m_pParticles->F(i) / m_pParticles->M(i);
+			m_pParticles->V(i) = m_pParticles->V(i) + m_pParticles->A(i)*dt;
+		}
 	}
 }
 
